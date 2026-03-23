@@ -29,7 +29,7 @@ Dark space-themed user interface
 
 TECHNOLOGIES
 
-HTML5 for structure
+HTML for structure
 CSS for styling
 JavaScript (ES6+) for functionality
 Fetch API for data retrieval
