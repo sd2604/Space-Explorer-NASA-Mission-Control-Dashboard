@@ -1,0 +1,178 @@
+
+.grid-layout {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+/* Asteroid Cards */
+.asteroid-card {
+  background: var(--surface-1);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease, border-color 0.4s;
+  backdrop-filter: blur(16px);
+}
+
+/* Tech grid overlay */
+.asteroid-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image: 
+    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size: 20px 20px;
+  opacity: 0.5;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.asteroid-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4), var(--border-glow);
+  border-color: var(--primary-accent);
+}
+
+.asteroid-card.hazardous:hover {
+  border-color: var(--danger-accent);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4), 0 0 15px rgba(244, 63, 94, 0.3);
+}
+
+.asteroid-card.hazardous {
+  border-left: 5px solid var(--danger-accent);
+}
+
+.asteroid-card.safe {
+  border-left: 5px solid var(--secondary-accent);
+}
+
+.ast-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  padding-bottom: 0.8rem;
+}
+
+.ast-header h3 {
+  font-size: 1.3rem;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Badges */
+.ast-badge {
+  font-size: 0.75rem;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.badge-danger {
+  background: rgba(244, 63, 94, 0.15);
+  color: var(--danger-accent);
+  border: 1px solid rgba(244, 63, 94, 0.5);
+  box-shadow: 0 0 10px rgba(244, 63, 94, 0.2);
+  text-shadow: 0 0 8px rgba(244, 63, 94, 0.8);
+}
+
+body.light .badge-danger {
+  text-shadow: none;
+  background: rgba(220, 38, 38, 0.1);
+  box-shadow: none;
+}
+
+.badge-safe {
+  background: rgba(139, 92, 246, 0.15); /* Purple safe/good token */
+  color: #c4b5fd;
+  border: 1px solid rgba(139, 92, 246, 0.5);
+  box-shadow: 0 0 10px rgba(139, 92, 246, 0.2);
+}
+
+body.light .badge-safe {
+  color: var(--secondary-accent);
+  box-shadow: none;
+}
+
+/* Data grid */
+.ast-data {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.data-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.data-label {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+}
+
+.data-val {
+  font-size: 1.1rem;
+  font-family: var(--font-heading);
+  font-weight: 500;
+}
+
+/* Countdown Row */
+.ast-countdown {
+  background: var(--surface-2);
+  padding: 0.8rem;
+  border-radius: var(--radius-md);
+  text-align: center;
+  border: 1px solid var(--border-color);
+  font-family: var(--font-heading);
+  font-weight: bold;
+  font-size: 1.1rem;
+  letter-spacing: 1px;
+}
+
+.ast-countdown span {
+  color: var(--primary-accent);
+}
+
+/* Pagination */
+.pagination-controls {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 2rem;
+  flex-wrap: wrap;
+}
+
+.page-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 5px;
+  border: 1px solid var(--border-color);
+  background: var(--surface-1);
+  color: var(--text-primary);
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.page-btn:hover {
+  background: var(--primary-hover);
+  color: white;
+}
+
+.page-btn.active {
+  background: var(--primary-accent);
+  color: white;
+  border-color: var(--primary-accent);
+}

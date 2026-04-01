@@ -1,0 +1,109 @@
+
+.iss-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+@media (min-width: 900px) {
+  .iss-container {
+    flex-direction: row;
+  }
+  .iss-stats {
+    flex: 1;
+  }
+  .iss-map-container {
+    flex: 2;
+  }
+}
+.iss-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  padding: 2rem;
+}
+
+.stat-box {
+  background: var(--surface-2);
+  padding: 1.5rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  text-align: center;
+  transition: transform 0.3s ease;
+}
+
+.stat-box:hover {
+  transform: translateY(-3px);
+  border-color: var(--primary-accent);
+}
+
+.stat-box h4 {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+.stat-box p {
+  font-family: var(--font-heading);
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+.iss-map-container {
+  position: relative;
+  min-height: 400px;
+  overflow: hidden;
+  padding: 0 !important;
+  border: 1px solid var(--primary-accent) !important;
+  box-shadow: inset 0 0 30px rgba(14, 165, 233, 0.1), var(--border-glow);
+}
+
+#iss-map-placeholder {
+  position: absolute;
+  inset: 0;
+  background: var(--surface-2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  z-index: 5;
+}
+
+#iss-map-frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+  z-index: 10;
+}
+.pulsing-dot {
+  width: 20px;
+  height: 20px;
+  background-color: var(--primary-accent);
+  border-radius: 50%;
+  position: relative;
+  margin-bottom: 20px;
+  box-shadow: 0 0 15px var(--primary-accent);
+}
+
+.pulsing-dot::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 20px;
+  height: 20px;
+  background-color: var(--primary-accent);
+  border-radius: 50%;
+  animation: radar-pulse 2s infinite cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes radar-pulse {
+  0% { width: 20px; height: 20px; opacity: 1; }
+  100% { width: 150px; height: 150px; opacity: 0; box-shadow: 0 0 20px var(--primary-accent); }
+}

@@ -2,32 +2,274 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>NASA Space Explorer — Mission Control</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mission Control | NASA Space Explorer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="../style_files/style.css" />
+    <link rel="stylesheet" href="../style_files/apod.css" />
+    <link rel="stylesheet" href="../style_files/favorites.css" />
+    <link rel="stylesheet" href="../style_files/asteroid.css" />
+    <link rel="stylesheet" href="../style_files/rover.css" />
+    <link rel="stylesheet" href="../style_files/iss.css" />
+
+    <!-- Background -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
   </head>
 
   <body>
-    <header>
-      <h1>NASA Space Explorer — Mission Control</h1>
-    </header>
+    <div id="vanta-bg"></div>
 
-    <main>
-      <section id="apod">
-        <h2>Astronomy Picture of the Day</h2>
-        <div id="apod-content">Loading...</div>
-        <section id="apod">
-          <h2>Astronomy Picture of the Day</h2>
+    <!-- Fullscreen Loader -->
+    <div id="loader" class="hidden">
+      <div class="spinner"></div>
+      <p>Establishing Connection...</p>
+    </div>
 
-          <div class="search-controls">
+    <!-- App Container (Sidebar + Main Content) -->
+    <div class="app-container">
+      
+      <!--SIDEBAR NAVIGATION -->
+      <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+          <i class="fa-solid fa-satellite sidebar-logo-icon"></i>
+          <h2>Mission Control</h2>
+          <button id="mobile-menu-close" class="mobile-only"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <ul class="nav-links">
+          <li class="active" data-target="dashboard">
+            <i class="fa-solid fa-rocket"></i> <span>Dashboard</span>
+          </li>
+          <li data-target="apod">
+            <i class="fa-solid fa-image"></i> <span>APOD</span>
+          </li>
+          <li data-target="asteroids">
+            <i class="fa-solid fa-meteor"></i> <span>Asteroids</span>
+          </li>
+          <li data-target="rover">
+            <i class="fa-solid fa-robot"></i> <span>Mars Rover</span>
+          </li>
+          <li data-target="iss">
+            <i class="fa-solid fa-globe"></i> <span>ISS Tracker</span>
+          </li>
+          <li data-target="favorites">
+            <i class="fa-solid fa-heart"></i> <span>Favorites</span>
+          </li>
+        </ul>
+
+        <!-- 🌙☀️ Theme Switch in Sidebar -->
+        <div class="theme-container">
+          <span>Theme</span>
+          <label class="theme-switch">
+            <input type="checkbox" id="theme-toggle" />
+            <span class="slider">
+              <span class="icon">🌙</span>
+            </span>
+          </label>
+        </div>
+      </nav>
+
+      <!-- MAIN CONTENT -->
+      <main class="main-content">
+        <!-- Top Bar for Mobile Menu Toggle -->
+        <header class="top-bar">
+          <button id="mobile-menu-btn" class="mobile-only"><i class="fa-solid fa-bars"></i></button>
+          <div class="top-bar-title">Mission Control</div>
+        </header>
+
+        <!-- 1. DASHBOARD OVERVIEW -->
+        <section id="dashboard" class="view-section active">
+          <div class="hero">
+            <h1>Welcome to Mission Control</h1>
+            <p>Portal to explore the universe using NASA's open APIs.</p>
+            <div class="hero-stats">
+              <div class="stat-card stagger-1" data-link="apod">
+                <i class="fa-solid fa-star"></i>
+                <h3>View APOD</h3>
+                <p>Astronomy Photo of the Day</p>
+              </div>
+              <div class="stat-card stagger-2" data-link="asteroids">
+                <i class="fa-solid fa-meteor"></i>
+                <h3>Track Asteroids</h3>
+                <p>Near Earth Objects</p>
+              </div>
+              <div class="stat-card stagger-3" data-link="rover">
+                <i class="fa-solid fa-robot"></i>
+                <h3>Mars Rovers</h3>
+                <p>Explore planetary photos</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 2. APOD SECTION -->
+        <section id="apod" class="view-section hidden">
+          <div class="section-header">
+            <h2>Astronomy Picture of the Day</h2>
+            <p>Discover the cosmos! Each day a different image or photograph of our fascinating universe is featured.</p>
+          </div>
+          
+          <div class="controls apod-controls stagger-1">
+            <button id="prev-btn" class="icon-btn" title="Previous Day"><i class="fa-solid fa-chevron-left"></i></button>
             <input type="date" id="date-input" />
-            <button id="search-btn">Search</button>
+            <button id="search-btn" class="primary-btn"><i class="fa-solid fa-search"></i> Search</button>
+            <button id="random-btn" class="secondary-btn" title="Random Date"><i class="fa-solid fa-dice"></i> Random</button>
+            <button id="next-btn" class="icon-btn" title="Next Day"><i class="fa-solid fa-chevron-right"></i></button>
           </div>
 
-          <div id="apod-content">Loading...</div>
+          <div id="apod-content" class="glass-card stagger-2">
+            <div class="skeleton-layout skeleton-active">
+              <div class="skeleton-media"></div>
+              <div class="skeleton-text">
+                <div class="skel-line skel-title"></div>
+                <div class="skel-line skel-p"></div>
+                <div class="skel-line skel-p"></div>
+                <div class="skel-line skel-p"></div>
+              </div>
+            </div>
+          </div>
         </section>
-      </section>
-    </main>
 
-    <script src="../script_files/script.js"></script>
+        <!-- 3. ASTEROID TRACKER -->
+        <section id="asteroids" class="view-section hidden">
+          <div class="section-header">
+            <h2>Near-Earth Asteroids</h2>
+            <p>Track objects approaching Earth today based on NASA NeoWs API.</p>
+          </div>
+
+          <div class="controls asteroid-controls stagger-1">
+            <button id="load-asteroids" class="primary-btn"><i class="fa-solid fa-rotate"></i> Load Today's Data</button>
+            <div class="filter-group hidden" id="asteroid-filters">
+              <label for="sort-asteroids">Sort by:</label>
+              <select id="sort-asteroids">
+                <option value="distance">Closest Distance</option>
+                <option value="speed">Fastest Speed</option>
+                <option value="size">Largest Size</option>
+                <option value="hazard">Hazardous First</option>
+              </select>
+            </div>
+          </div>
+
+          <div id="asteroid-list" class="grid-layout stagger-2">
+            <div class="empty-state">
+              <i class="fa-solid fa-meteor fa-3x"></i>
+              <p>Click the load button to scan for asteroids.</p>
+            </div>
+          </div>
+          
+          <div id="asteroid-pagination" class="pagination-controls hidden">
+          </div>
+        </section>
+
+        <!-- 4. MARS ROVER -->
+        <section id="rover" class="view-section hidden">
+          <div class="section-header">
+            <h2>Mars Rover Explorer</h2>
+            <p>View latest images captured by Mars Rovers.</p>
+          </div>
+
+          <div class="controls rover-controls glass-card stagger-1">
+            <div class="control-item">
+              <label for="rover-select">Rover:</label>
+              <select id="rover-select">
+                <option value="curiosity">Curiosity</option>
+                <option value="perseverance">Perseverance</option>
+                <option value="opportunity">Opportunity</option>
+              </select>
+            </div>
+            <div class="control-item">
+              <label for="camera-select">Camera:</label>
+              <select id="camera-select">
+                <option value="all">All Cameras</option>
+                <option value="FHAZ">Front Hazard Avoidance</option>
+                <option value="RHAZ">Rear Hazard Avoidance</option>
+                <option value="NAVCAM">Navigation Camera</option>
+              </select>
+            </div>
+            <div class="control-item">
+              <label for="sol-input">Martian Sol:</label>
+              <input type="number" id="sol-input" value="1000" min="1" max="5000" />
+            </div>
+            <button id="load-rover-btn" class="primary-btn"><i class="fa-solid fa-camera"></i> Fetch Photos</button>
+          </div>
+
+          <div id="rover-gallery" class="grid-layout gallery-grid stagger-2">
+            <div class="empty-state">
+              <i class="fa-solid fa-robot fa-3x"></i>
+              <p>Select parameters and fetch rover photos.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- 5. ISS TRACKER -->
+        <section id="iss" class="view-section hidden">
+          <div class="section-header">
+            <h2>Live ISS Tracker</h2>
+            <p>Real-time location of the International Space Station.</p>
+          </div>
+
+          <div class="iss-container">
+            <div class="iss-stats glass-card stagger-1">
+              <div class="stat-box">
+                <h4>Latitude</h4>
+                <p id="iss-lat">--</p>
+              </div>
+              <div class="stat-box">
+                <h4>Longitude</h4>
+                <p id="iss-lng">--</p>
+              </div>
+              <div class="stat-box">
+                <h4>Velocity</h4>
+                <p id="iss-vel">-- km/h</p>
+              </div>
+              <div class="stat-box">
+                <h4>Altitude</h4>
+                <p id="iss-alt">-- km</p>
+              </div>
+            </div>
+            
+            <div class="iss-map-container glass-card stagger-2">
+              <!-- Using an iframe map or simple visual for ISS -->
+              <div id="iss-map-placeholder">
+                <div class="pulsing-dot"></div>
+                <p>Tracking Station...</p>
+              </div>
+              <iframe id="iss-map-frame" width="100%" height="400" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="" class="hidden"></iframe>
+            </div>
+          </div>
+        </section>
+
+        <!-- 6. FAVORITES -->
+        <section id="favorites" class="view-section hidden">
+          <div class="section-header">
+            <h2>Favorite Images</h2>
+            <p>Your saved cosmic discoveries.</p>
+          </div>
+          <div id="favorites-gallery" class="masonry-layout">
+            <div class="empty-state">
+              <i class="fa-solid fa-heart fa-3x" style="color:#ef4444;"></i>
+              <p>No favorites yet. Save some images from APOD!</p>
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+    <div id="lightbox-modal" class="modal hidden">
+      <span class="modal-close" id="close-lightbox">&times;</span>
+      <img class="modal-content" id="lightbox-img" />
+      <div id="lightbox-caption"></div>
+    </div>
+    <script src="../script_files/loader.js"></script>
+    <script src="../script_files/favorites.js"></script>
+    <script src="../script_files/apod.js"></script>
+    <script src="../script_files/asteroid.js"></script>
+    <script src="../script_files/rover.js"></script>
+    <script src="../script_files/iss.js"></script>
+    <script src="../script_files/main.js"></script>
   </body>
 </html>

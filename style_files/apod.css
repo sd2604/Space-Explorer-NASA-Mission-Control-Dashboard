@@ -1,0 +1,113 @@
+
+.apod-controls {
+  background: var(--surface-1);
+  padding: 15px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  justify-content: center;
+}
+
+#apod-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  overflow: hidden;
+}
+
+@media (min-width: 900px) {
+  #apod-content {
+    flex-direction: row;
+    align-items: stretch; 
+  }
+}
+
+.apod-media-container {
+  flex: 1;
+  position: relative;
+  min-height: 400px;
+  background: var(--bg-color);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border-color);
+  box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+}
+
+.apod-media-container::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-md);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+  pointer-events: none;
+}
+
+.apod-media-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+  cursor: pointer;
+}
+
+#apod-image:hover {
+  transform: scale(1.02);
+}
+
+.apod-media-container iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.apod-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.apod-title {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.apod-meta {
+  display: inline-flex;
+  gap: 10px;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.badge {
+  background: rgba(59, 130, 246, 0.2);
+  color: var(--primary-accent);
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-weight: 600;
+  border: 1px solid rgba(59, 130, 246, 0.4);
+}
+
+.apod-explanation {
+  font-size: 1.05rem;
+  line-height: 1.8;
+  margin-bottom: 2rem;
+  color: var(--text-primary);
+}
+
+.apod-actions {
+  display: flex;
+  gap: 15px;
+  margin-top: auto;
+  flex-wrap: wrap;
+}
+
+.download-btn {
+  background: var(--secondary-accent);
+}
+.download-btn:hover {
+  background: #059669;
+}

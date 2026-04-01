@@ -1,0 +1,75 @@
+
+.masonry-layout {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+  grid-auto-flow: dense;
+}
+
+.favorite-card {
+  position: relative;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  transition: transform 0.4s ease;
+  cursor: pointer;
+  background: var(--surface-1);
+}
+
+.favorite-card img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+  transition: var(--transition);
+}
+
+.favorite-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 35px rgba(0,0,0,0.5), 0 0 20px rgba(139, 92, 246, 0.4);
+  border-color: var(--secondary-accent);
+  z-index: 10;
+}
+
+.favorite-card:hover img {
+  transform: scale(1.05);
+}
+
+.fav-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+  opacity: 0;
+  transition: var(--transition);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 1rem;
+}
+
+.favorite-card:hover .fav-overlay {
+  opacity: 1;
+}
+.fav-remove-btn {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: var(--surface-1);
+  color: var(--danger-accent);
+  border: none;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease, background 0.3s;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+}
+
+.fav-remove-btn:hover {
+  background: var(--danger-accent);
+  color: white;
+  transform: scale(1.15);
+}
