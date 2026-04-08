@@ -4,10 +4,16 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Mission Control | NASA Space Explorer</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&family=Orbitron:wght@500;700;900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
     <link rel="stylesheet" href="../style_files/style.css" />
     <link rel="stylesheet" href="../style_files/apod.css" />
     <link rel="stylesheet" href="../style_files/favorites.css" />
@@ -20,8 +26,16 @@
     <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
   </head>
 
-  <body>
+  <body class="dashboard-active">
+    <!-- 🌌 VANTA BACKGROUND -->
     <div id="vanta-bg"></div>
+    <!-- 🎥 VIDEO BACKGROUND -->
+    <video autoplay muted loop playsinline class="bg-video">
+      <source src="../style_files/earthvideo.mp4" type="video/mp4" />
+    </video>
+    
+    <!-- 🌑 OVERLAY -->
+    <div class="overlay"></div>
 
     <!-- Fullscreen Loader -->
     <div id="loader" class="hidden">
@@ -31,13 +45,14 @@
 
     <!-- App Container (Sidebar + Main Content) -->
     <div class="app-container">
-      
       <!--SIDEBAR NAVIGATION -->
       <nav class="sidebar" id="sidebar">
         <div class="sidebar-header">
           <i class="fa-solid fa-satellite sidebar-logo-icon"></i>
           <h2>Mission Control</h2>
-          <button id="mobile-menu-close" class="mobile-only"><i class="fa-solid fa-xmark"></i></button>
+          <button id="mobile-menu-close" class="mobile-only">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
         </div>
 
         <ul class="nav-links">
@@ -61,7 +76,7 @@
           </li>
         </ul>
 
-        <!-- 🌙☀️ Theme Switch in Sidebar -->
+        <!-- Theme Switch in Sidebar -->
         <div class="theme-container">
           <span>Theme</span>
           <label class="theme-switch">
@@ -75,9 +90,10 @@
 
       <!-- MAIN CONTENT -->
       <main class="main-content">
-        <!-- Top Bar for Mobile Menu Toggle -->
         <header class="top-bar">
-          <button id="mobile-menu-btn" class="mobile-only"><i class="fa-solid fa-bars"></i></button>
+          <button id="mobile-menu-btn" class="mobile-only">
+            <i class="fa-solid fa-bars"></i>
+          </button>
           <div class="top-bar-title">Mission Control</div>
         </header>
 
@@ -110,15 +126,26 @@
         <section id="apod" class="view-section hidden">
           <div class="section-header">
             <h2>Astronomy Picture of the Day</h2>
-            <p>Discover the cosmos! Each day a different image or photograph of our fascinating universe is featured.</p>
+            <p>
+              Discover the cosmos! Each day a different image or photograph of
+              our fascinating universe is featured.
+            </p>
           </div>
-          
+
           <div class="controls apod-controls stagger-1">
-            <button id="prev-btn" class="icon-btn" title="Previous Day"><i class="fa-solid fa-chevron-left"></i></button>
+            <button id="prev-btn" class="icon-btn" title="Previous Day">
+              <i class="fa-solid fa-chevron-left"></i>
+            </button>
             <input type="date" id="date-input" />
-            <button id="search-btn" class="primary-btn"><i class="fa-solid fa-search"></i> Search</button>
-            <button id="random-btn" class="secondary-btn" title="Random Date"><i class="fa-solid fa-dice"></i> Random</button>
-            <button id="next-btn" class="icon-btn" title="Next Day"><i class="fa-solid fa-chevron-right"></i></button>
+            <button id="search-btn" class="primary-btn">
+              <i class="fa-solid fa-search"></i> Search
+            </button>
+            <button id="random-btn" class="secondary-btn" title="Random Date">
+              <i class="fa-solid fa-dice"></i> Random
+            </button>
+            <button id="next-btn" class="icon-btn" title="Next Day">
+              <i class="fa-solid fa-chevron-right"></i>
+            </button>
           </div>
 
           <div id="apod-content" class="glass-card stagger-2">
@@ -138,11 +165,15 @@
         <section id="asteroids" class="view-section hidden">
           <div class="section-header">
             <h2>Near-Earth Asteroids</h2>
-            <p>Track objects approaching Earth today based on NASA NeoWs API.</p>
+            <p>
+              Track objects approaching Earth today based on NASA NeoWs API.
+            </p>
           </div>
 
           <div class="controls asteroid-controls stagger-1">
-            <button id="load-asteroids" class="primary-btn"><i class="fa-solid fa-rotate"></i> Load Today's Data</button>
+            <button id="load-asteroids" class="primary-btn">
+              <i class="fa-solid fa-rotate"></i> Load Today's Data
+            </button>
             <div class="filter-group hidden" id="asteroid-filters">
               <label for="sort-asteroids">Sort by:</label>
               <select id="sort-asteroids">
@@ -160,9 +191,11 @@
               <p>Click the load button to scan for asteroids.</p>
             </div>
           </div>
-          
-          <div id="asteroid-pagination" class="pagination-controls hidden">
-          </div>
+
+          <div
+            id="asteroid-pagination"
+            class="pagination-controls hidden"
+          ></div>
         </section>
 
         <!-- 4. MARS ROVER -->
@@ -192,9 +225,17 @@
             </div>
             <div class="control-item">
               <label for="sol-input">Martian Sol:</label>
-              <input type="number" id="sol-input" value="1000" min="1" max="5000" />
+              <input
+                type="number"
+                id="sol-input"
+                value="1000"
+                min="1"
+                max="5000"
+              />
             </div>
-            <button id="load-rover-btn" class="primary-btn"><i class="fa-solid fa-camera"></i> Fetch Photos</button>
+            <button id="load-rover-btn" class="primary-btn">
+              <i class="fa-solid fa-camera"></i> Fetch Photos
+            </button>
           </div>
 
           <div id="rover-gallery" class="grid-layout gallery-grid stagger-2">
@@ -231,14 +272,23 @@
                 <p id="iss-alt">-- km</p>
               </div>
             </div>
-            
+
             <div class="iss-map-container glass-card stagger-2">
-              <!-- Using an iframe map or simple visual for ISS -->
               <div id="iss-map-placeholder">
                 <div class="pulsing-dot"></div>
                 <p>Tracking Station...</p>
               </div>
-              <iframe id="iss-map-frame" width="100%" height="400" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="" class="hidden"></iframe>
+              <iframe
+                id="iss-map-frame"
+                width="100%"
+                height="400"
+                frameborder="0"
+                scrolling="no"
+                marginheight="0"
+                marginwidth="0"
+                src=""
+                class="hidden"
+              ></iframe>
             </div>
           </div>
         </section>
@@ -251,12 +301,11 @@
           </div>
           <div id="favorites-gallery" class="masonry-layout">
             <div class="empty-state">
-              <i class="fa-solid fa-heart fa-3x" style="color:#ef4444;"></i>
+              <i class="fa-solid fa-heart fa-3x" style="color: #ef4444"></i>
               <p>No favorites yet. Save some images from APOD!</p>
             </div>
           </div>
         </section>
-
       </main>
     </div>
     <div id="lightbox-modal" class="modal hidden">
