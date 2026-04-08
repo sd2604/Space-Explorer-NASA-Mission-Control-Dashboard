@@ -68,6 +68,13 @@ document.addEventListener("DOMContentLoaded", () => {
           targetSection.classList.add("active");
           triggerSectionLoad(link.dataset.target);
         }
+        
+        if (link.dataset.target === "dashboard") {
+          document.body.classList.add("dashboard-active");
+        } else {
+          document.body.classList.remove("dashboard-active");
+        }
+        
         if (window.innerWidth <= 900) {
           sidebar.classList.remove("open");
         }

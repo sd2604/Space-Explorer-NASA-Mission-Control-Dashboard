@@ -10,7 +10,7 @@ function loadAPOD(date = "") {
   if (!container) return;
   showLoader("apod-content");
 
-  let url = `https://api.nasa.gov/planetary/apod?api_key=${window.API_KEY}`;
+  let url = `https://api.nasa.gov/planetary/apod?api_key=${window.API_KEY}&thumbs=true`;
   if (date) url += `&date=${date}`;
 
   fetch(url)
@@ -31,12 +31,55 @@ function loadAPOD(date = "") {
       let mediaHtml = "";
       const sourceUrl = isHD && data.hdurl ? data.hdurl : data.url;
 
-      if (data.media_type === "image") {
+      if (data.media_type === "video") {
+        let videoUrl = data.url;
+        
+        let isEmbeddable = false;
+        let isDirectVideo = false;
+        
+        if (videoUrl.toLowerCase().endsWith(".mp4")) {
+          isDirectVideo = true;
+        } else {
+          const ytRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i;
+          const ytMatch = videoUrl.match(ytRegex);
+          const vimeoRegex = /vimeo\.com\/(?:video\/)?([0-9]+)/i;
+          const vimeoMatch = videoUrl.match(vimeoRegex);
+          
+          if (ytMatch && ytMatch[1]) {
+            videoUrl = `https://www.youtube.com/embed/${ytMatch[1]}?autoplay=0&rel=0`;
+            isEmbeddable = true;
+          } else if (vimeoMatch && vimeoMatch[1]) {
+            videoUrl = `https://player.vimeo.com/video/${vimeoMatch[1]}?autoplay=0`;
+            isEmbeddable = true;
+          }
+        }
+        
+        if (isDirectVideo) {
+          mediaHtml = `<video id="apod-video" autoplay muted loop playsinline controls>
+                         <source src="${videoUrl}" type="video/mp4">
+                       </video>`;
+        } else if (isEmbeddable) {
+          mediaHtml = `<iframe id="apod-video" src="${videoUrl}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+        } else {
+          if (data.thumbnail_url) {
+            mediaHtml = `<div style="position:relative; width:100%; height:100%;">
+                           <img id="apod-image" src="${data.thumbnail_url}" alt="Video Thumbnail" style="opacity:1; cursor:pointer;" onclick="window.open('${data.url}', '_blank')">
+                           <div style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); background:rgba(0,0,0,0.6); padding:1.5rem 2rem; border-radius:30px; border: 1px solid rgba(0, 212, 255, 0.4); pointer-events:none; box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);">
+                              <i class="fa-solid fa-play" style="color:#00d4ff; font-size:2rem;"></i>
+                           </div>
+                         </div>`;
+          } else {
+            mediaHtml = `<div class="empty-state" style="height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding: 2rem;">
+                            <i class="fa-solid fa-link-slash fa-3x" style="color:#00d4ff; margin-bottom:1rem;"></i>
+                            <p style="color:#e0faff; font-family:'Orbitron', sans-serif; font-size:1.2rem; margin-bottom:1.5rem;">Video cannot be embedded.</p>
+                            <a href="${data.url}" target="_blank" class="primary-btn" style="text-decoration:none; display:inline-block; padding: 0.8rem 1.5rem; border-radius: 20px;"><i class="fa-solid fa-arrow-up-right-from-square"></i> Watch on NASA</a>
+                         </div>`;
+          }
+        }
+      } else {
         mediaHtml = `<img id="apod-image" src="${sourceUrl}" alt="${data.title}" 
                     onload="this.style.opacity=1" style="opacity:0; transition: opacity 0.5s;"
                     onclick="window.openLightbox('${data.hdurl || data.url}', '${data.title.replace(/'/g, "\\'")}')">`;
-      } else {
-        mediaHtml = `<iframe src="${data.url}" allowfullscreen></iframe>`;
       }
 
       const copyright = data.copyright ? `&copy; ${data.copyright}` : "Public Domain";
@@ -98,7 +141,6 @@ function shiftDate(offset) {
   const d = new Date(currentAPODDate);
   d.setDate(d.getDate() + offset);
   
-  // Prevent future dates
   if (d > new Date()) return alert("Can't look into the future!");
   
   const formatted = d.toISOString().split("T")[0];

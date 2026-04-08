@@ -39,7 +39,7 @@ function fetchAsteroids() {
       asteroidsData = asteroidsData.map(a => {
         return {
           id: a.id,
-          name: a.name.replace(/[^\w\s-]/gi, ''), // Clean name formatting
+          name: a.name.replace(/[^\w\s-]/gi, ''),
           sizeFormatter: Math.round(a.estimated_diameter.meters.estimated_diameter_max),
           distanceNum: parseFloat(a.close_approach_data[0].miss_distance.kilometers),
           speedNum: parseFloat(a.close_approach_data[0].relative_velocity.kilometers_per_hour),
@@ -129,7 +129,6 @@ function renderPage() {
     `;
   }).join("");
 
-  // Start timers for visible items immediately
   pageData.forEach(a => {
     startTimer(a.id, a.approachTimeStr);
   });
@@ -153,8 +152,7 @@ function setupPagination() {
     btn.addEventListener("click", (e) => {
       currentPage = parseInt(e.target.dataset.page);
       renderPage();
-      setupPagination(); // update active state
-      // Scroll to top of list
+      setupPagination(); 
       document.getElementById('asteroids').scrollIntoView({ behavior: 'smooth' });
     });
   });
