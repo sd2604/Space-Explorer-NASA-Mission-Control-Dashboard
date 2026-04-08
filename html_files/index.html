@@ -14,6 +14,7 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../style_files/style.css" />
     <link rel="stylesheet" href="../style_files/apod.css" />
     <link rel="stylesheet" href="../style_files/favorites.css" />
@@ -33,7 +34,7 @@
     <video autoplay muted loop playsinline class="bg-video">
       <source src="../style_files/earthvideo.mp4" type="video/mp4" />
     </video>
-    
+
     <!-- 🌑 OVERLAY -->
     <div class="overlay"></div>
 
@@ -43,60 +44,57 @@
       <p>Establishing Connection...</p>
     </div>
 
-    <!-- App Container (Sidebar + Main Content) -->
+    <!-- App Container (Navbar + Main Content) -->
     <div class="app-container">
-      <!--SIDEBAR NAVIGATION -->
-      <nav class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-          <i class="fa-solid fa-satellite sidebar-logo-icon"></i>
-          <h2>Mission Control</h2>
-          <button id="mobile-menu-close" class="mobile-only">
-            <i class="fa-solid fa-xmark"></i>
-          </button>
+      <!-- MAIN NAVBAR -->
+      <nav class="top-navbar">
+        <div class="logo">
+          <span class="logo-text">MISSION CONTROL</span>
         </div>
 
         <ul class="nav-links">
           <li class="active" data-target="dashboard">
-            <i class="fa-solid fa-rocket"></i> <span>Dashboard</span>
+            <i class="fa-solid fa-rocket"></i>
+            <span class="nav-text">Dashboard</span>
           </li>
           <li data-target="apod">
-            <i class="fa-solid fa-image"></i> <span>APOD</span>
+            <i class="fa-solid fa-image"></i> <span class="nav-text">APOD</span>
           </li>
           <li data-target="asteroids">
-            <i class="fa-solid fa-meteor"></i> <span>Asteroids</span>
+            <i class="fa-solid fa-meteor"></i>
+            <span class="nav-text">Asteroids</span>
           </li>
           <li data-target="rover">
-            <i class="fa-solid fa-robot"></i> <span>Mars Rover</span>
+            <i class="fa-solid fa-robot"></i>
+            <span class="nav-text">Mars Rover</span>
           </li>
           <li data-target="iss">
-            <i class="fa-solid fa-globe"></i> <span>ISS Tracker</span>
+            <i class="fa-solid fa-globe"></i>
+            <span class="nav-text">ISS Tracker</span>
           </li>
           <li data-target="favorites">
-            <i class="fa-solid fa-heart"></i> <span>Favorites</span>
+            <i class="fa-solid fa-heart"></i>
+            <span class="nav-text">Favorites</span>
           </li>
         </ul>
 
-        <!-- Theme Switch in Sidebar -->
-        <div class="theme-container">
-          <span>Theme</span>
-          <label class="theme-switch">
-            <input type="checkbox" id="theme-toggle" />
-            <span class="slider">
-              <span class="icon">🌙</span>
-            </span>
-          </label>
+        <div class="navbar-actions">
+          <div class="theme-container">
+            <label class="theme-switch">
+              <input type="checkbox" id="theme-toggle" />
+              <span class="slider">
+                <span class="icon">🌙</span>
+              </span>
+            </label>
+          </div>
+          <button id="mobile-menu-btn" class="mobile-only">
+            <i class="fa-solid fa-bars"></i>
+          </button>
         </div>
       </nav>
 
       <!-- MAIN CONTENT -->
       <main class="main-content">
-        <header class="top-bar">
-          <button id="mobile-menu-btn" class="mobile-only">
-            <i class="fa-solid fa-bars"></i>
-          </button>
-          <div class="top-bar-title">Mission Control</div>
-        </header>
-
         <!-- 1. DASHBOARD OVERVIEW -->
         <section id="dashboard" class="view-section active">
           <div class="hero">
@@ -123,7 +121,7 @@
         </section>
 
         <!-- 2. APOD SECTION -->
-        <section id="apod" class="view-section hidden">
+        <section id="apod" class="view-section">
           <div class="section-header">
             <h2>Astronomy Picture of the Day</h2>
             <p>
@@ -162,7 +160,7 @@
         </section>
 
         <!-- 3. ASTEROID TRACKER -->
-        <section id="asteroids" class="view-section hidden">
+        <section id="asteroids" class="view-section">
           <div class="section-header">
             <h2>Near-Earth Asteroids</h2>
             <p>
@@ -175,6 +173,21 @@
               <i class="fa-solid fa-rotate"></i> Load Today's Data
             </button>
             <div class="filter-group hidden" id="asteroid-filters">
+              <!-- Search & Filter using Higher-Order Functions -->
+              <input
+                type="text"
+                id="search-asteroids"
+                placeholder="Search by name..."
+                autocomplete="off"
+              />
+
+              <label for="filter-hazard">Status:</label>
+              <select id="filter-hazard">
+                <option value="all">All</option>
+                <option value="safe">Safe Only</option>
+                <option value="hazardous">Hazardous Only</option>
+              </select>
+
               <label for="sort-asteroids">Sort by:</label>
               <select id="sort-asteroids">
                 <option value="distance">Closest Distance</option>
@@ -183,6 +196,14 @@
                 <option value="hazard">Hazardous First</option>
               </select>
             </div>
+          </div>
+
+          <!-- Dynamic Array Insights Dashboard -->
+          <div
+            id="asteroid-insights"
+            class="asteroid-insights glass-card stagger-1 hidden"
+          >
+            <!-- Computed metrics will be injected here via .reduce() and .find() -->
           </div>
 
           <div id="asteroid-list" class="grid-layout stagger-2">
@@ -199,7 +220,7 @@
         </section>
 
         <!-- 4. MARS ROVER -->
-        <section id="rover" class="view-section hidden">
+        <section id="rover" class="view-section">
           <div class="section-header">
             <h2>Mars Rover Explorer</h2>
             <p>View latest images captured by Mars Rovers.</p>
@@ -247,7 +268,7 @@
         </section>
 
         <!-- 5. ISS TRACKER -->
-        <section id="iss" class="view-section hidden">
+        <section id="iss" class="view-section">
           <div class="section-header">
             <h2>Live ISS Tracker</h2>
             <p>Real-time location of the International Space Station.</p>
@@ -294,7 +315,7 @@
         </section>
 
         <!-- 6. FAVORITES -->
-        <section id="favorites" class="view-section hidden">
+        <section id="favorites" class="view-section">
           <div class="section-header">
             <h2>Favorite Images</h2>
             <p>Your saved cosmic discoveries.</p>

@@ -49,6 +49,8 @@ body.light #load-asteroids:hover {
   margin-right: 0.5rem;
 }
 
+#search-asteroids,
+#filter-hazard,
 #sort-asteroids {
   background: rgba(5, 12, 25, 0.8);
   border: 1px solid rgba(0, 212, 255, 0.3);
@@ -60,16 +62,89 @@ body.light #load-asteroids:hover {
   font-family: var(--font-body);
 }
 
-#sort-asteroids:hover, #sort-asteroids:focus {
+#search-asteroids {
+  cursor: text;
+  width: 250px;
+}
+
+#search-asteroids::placeholder {
+  color: rgba(224, 250, 255, 0.5);
+}
+
+#search-asteroids:focus,
+#filter-hazard:focus,
+#sort-asteroids:hover, 
+#sort-asteroids:focus {
   border-color: #00d4ff;
   box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
   outline: none;
 }
 
+body.light #search-asteroids,
+body.light #filter-hazard,
 body.light #sort-asteroids {
   background: #fff;
   color: #0f172a;
   border-color: rgba(11, 61, 145, 0.2);
+}
+
+/* Insight Dashboard */
+.asteroid-insights {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+  padding: 1.5rem;
+  margin-top: 2rem;
+  background: linear-gradient(135deg, rgba(5, 12, 25, 0.8) 0%, rgba(0, 212, 255, 0.05) 100%);
+  border: 1px solid rgba(0, 212, 255, 0.3);
+  box-shadow: inset 0 0 20px rgba(0, 212, 255, 0.05), 0 8px 32px rgba(0, 0, 0, 0.3);
+  animation: fadeIn 0.4s ease forwards;
+}
+
+body.light .asteroid-insights {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(240, 249, 255, 0.9) 100%);
+  border-color: rgba(11, 61, 145, 0.2);
+  box-shadow: inset 0 0 15px rgba(11, 61, 145, 0.02), 0 8px 32px rgba(0, 0, 0, 0.05);
+}
+
+.insight-box {
+  text-align: center;
+  padding: 0 2rem;
+  border-right: 1px solid rgba(0, 212, 255, 0.2);
+}
+
+.insight-box:last-child {
+  border-right: none;
+}
+
+body.light .insight-box {
+  border-right: 1px solid rgba(11, 61, 145, 0.1);
+}
+
+.insight-box h4 {
+  font-family: 'Orbitron', sans-serif;
+  color: var(--primary-accent);
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 0.5rem;
+}
+
+.insight-box p {
+  font-size: 1.1rem;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.hazardous-metric h4 {
+  color: #fca5a5;
+  text-shadow: 0 0 8px rgba(252, 165, 165, 0.5);
+}
+
+.warning-metric h4 {
+  color: #fde047;
+  text-shadow: 0 0 8px rgba(253, 224, 71, 0.5);
 }
 
 /* Asteroid Cards */

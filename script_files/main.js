@@ -48,47 +48,62 @@ document.addEventListener("DOMContentLoaded", () => {
   function setupNavigation() {
     const navLinks = document.querySelectorAll(".nav-links li");
     const sections = document.querySelectorAll(".view-section");
-    const sidebar = document.getElementById("sidebar");
     const mobileOpen = document.getElementById("mobile-menu-btn");
-    const mobileClose = document.getElementById("mobile-menu-close");
-
+    
+    // Smooth scroll wiring
     navLinks.forEach(link => {
       link.addEventListener("click", () => {
-        navLinks.forEach(n => n.classList.remove("active"));
-        sections.forEach(s => s.classList.remove("active", "hidden")); 
-        sections.forEach(s => {
-           if(s.id !== link.dataset.target) {
-              s.classList.add("hidden");
-           }
-        });
-        link.classList.add("active");
-        const targetSection = document.getElementById(link.dataset.target);
+        const targetId = link.dataset.target;
+        const targetSection = document.getElementById(targetId);
+        
         if (targetSection) {
-          targetSection.classList.remove("hidden");
-          targetSection.classList.add("active");
-          triggerSectionLoad(link.dataset.target);
-        }
-        
-        if (link.dataset.target === "dashboard") {
-          document.body.classList.add("dashboard-active");
-        } else {
-          document.body.classList.remove("dashboard-active");
-        }
-        
-        if (window.innerWidth <= 900) {
-          sidebar.classList.remove("open");
+          targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
       });
     });
+
+    // Dashboard card reroutes
     document.querySelectorAll(".stat-card").forEach(card => {
       card.addEventListener("click", () => {
-        const target = card.dataset.link;
-        const link = document.querySelector(`.nav-links li[data-target="${target}"]`);
-        if (link) link.click();
+        const targetId = card.dataset.link;
+        const targetSection = document.getElementById(targetId);
+        if (targetSection) {
+            targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
       });
     });
-    if(mobileOpen) mobileOpen.addEventListener("click", () => sidebar.classList.add("open"));
-    if(mobileClose) mobileClose.addEventListener("click", () => sidebar.classList.remove("open"));
+
+    // IntersectionObserver to auto-track scroll hooks
+    const observerOptions = {
+        root: null,
+        rootMargin: '-30% 0px -70% 0px', // Hook tight so snap always engages instantly
+        threshold: 0
+    };
+
+    const sectionObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const targetId = entry.target.id;
+                
+                navLinks.forEach(link => {
+                    link.classList.toggle("active", link.dataset.target === targetId);
+                });
+                
+                // Lock the spacevideo backend ON if we drop back to dashboard
+                if (targetId === "dashboard") {
+                    document.body.classList.add("dashboard-active");
+                } else {
+                    document.body.classList.remove("dashboard-active");
+                }
+                
+                triggerSectionLoad(targetId);
+            }
+        });
+    }, observerOptions);
+
+    sections.forEach(section => {
+        sectionObserver.observe(section);
+    });
   }
 
   function triggerSectionLoad(sectionId) {

@@ -2,14 +2,30 @@ const asteroidBtn = document.getElementById("load-asteroids");
 const asteroidList = document.getElementById("asteroid-list");
 const filterGroup = document.getElementById("asteroid-filters");
 const sortSelect = document.getElementById("sort-asteroids");
+const searchInput = document.getElementById("search-asteroids");
+const hazardSelect = document.getElementById("filter-hazard");
 const paginationContainer = document.getElementById("asteroid-pagination");
+const insightsPanel = document.getElementById("asteroid-insights");
 
 let asteroidsData = [];
+let filteredAsteroidsData = []; // Pure state reference for HOFs
 let countdownIntervals = [];
 const ITEMS_PER_PAGE = 6;
 let currentPage = 1;
 
 asteroidBtn?.addEventListener("click", fetchAsteroids);
+
+// HOF triggers
+searchInput?.addEventListener("input", () => {
+  currentPage = 1; 
+  applyFilters();
+});
+
+hazardSelect?.addEventListener("change", () => {
+  currentPage = 1; 
+  applyFilters();
+});
+
 sortSelect?.addEventListener("change", () => {
   currentPage = 1; 
   sortAndRender();
@@ -48,11 +64,17 @@ function fetchAsteroids() {
         };
       });
 
+      // Map baseline to our working frame
+      filteredAsteroidsData = [...asteroidsData];
+
       filterGroup.classList.remove("hidden");
+      insightsPanel.classList.remove("hidden");
       paginationContainer.classList.remove("hidden");
       sortSelect.value = "distance";
+      hazardSelect.value = "all";
+      searchInput.value = "";
       
-      sortAndRender();
+      applyFilters();
     })
     .catch((err) => {
       console.error(err);
@@ -64,21 +86,70 @@ function fetchAsteroids() {
     });
 }
 
+function applyFilters() {
+  const searchTerm = searchInput.value.toLowerCase().trim();
+  const hazardFilter = hazardSelect.value;
+  
+  // Array.prototype.filter() execution
+  filteredAsteroidsData = asteroidsData.filter(a => {
+      const matchesSearch = a.name.toLowerCase().includes(searchTerm);
+      const matchesHazard = hazardFilter === "all" 
+        || (hazardFilter === "hazardous" && a.isHazardous)
+        || (hazardFilter === "safe" && !a.isHazardous);
+        
+      return matchesSearch && matchesHazard;
+  });
+
+  sortAndRender();
+}
+
 function sortAndRender() {
   const sortBy = sortSelect.value;
   
+  // Array.prototype.sort() execution
   if (sortBy === "distance") {
-    asteroidsData.sort((a, b) => a.distanceNum - b.distanceNum);
+    filteredAsteroidsData.sort((a, b) => a.distanceNum - b.distanceNum);
   } else if (sortBy === "speed") {
-    asteroidsData.sort((a, b) => b.speedNum - a.speedNum);
+    filteredAsteroidsData.sort((a, b) => b.speedNum - a.speedNum);
   } else if (sortBy === "size") {
-    asteroidsData.sort((a, b) => b.sizeFormatter - a.sizeFormatter);
+    filteredAsteroidsData.sort((a, b) => b.sizeFormatter - a.sizeFormatter);
   } else if (sortBy === "hazard") {
-    asteroidsData.sort((a, b) => (a.isHazardous === b.isHazardous ? 0 : a.isHazardous ? -1 : 1));
+    filteredAsteroidsData.sort((a, b) => (b.isHazardous ? 1 : 0) - (a.isHazardous ? 1 : 0));
   }
 
+  calculateInsights();
   renderPage();
   setupPagination();
+}
+
+function calculateInsights() {
+  if (filteredAsteroidsData.length === 0) {
+      insightsPanel.innerHTML = `<div class="empty-state" style="margin:0;">No metrics available for current filters.</div>`;
+      return;
+  }
+
+  // Array.prototype.reduce() execution 
+  const totalSpeed = filteredAsteroidsData.reduce((acc, a) => acc + a.speedNum, 0);
+  const avgSpeed = Math.round(totalSpeed / filteredAsteroidsData.length);
+
+  // Isolate extremes using safe spread sorting (or .reduce effectively hooks min/max without mutating context)
+  const fastest = filteredAsteroidsData.reduce((max, a) => a.speedNum > max.speedNum ? a : max, filteredAsteroidsData[0]);
+  const closest = filteredAsteroidsData.reduce((min, a) => a.distanceNum < min.distanceNum ? a : min, filteredAsteroidsData[0]);
+
+  insightsPanel.innerHTML = `
+    <div class="insight-box">
+      <h4><i class="fa-solid fa-gauge-high"></i> Avg Speed</h4>
+      <p>${avgSpeed.toLocaleString()} km/h</p>
+    </div>
+    <div class="insight-box hazardous-metric">
+      <h4><i class="fa-solid fa-fire"></i> Fastest Object</h4>
+      <p><strong>${fastest.name}</strong><br/>${Math.round(fastest.speedNum).toLocaleString()} km/h</p>
+    </div>
+    <div class="insight-box warning-metric">
+      <h4><i class="fa-solid fa-arrows-to-dot"></i> Closest Approach</h4>
+      <p><strong>${closest.name}</strong><br/>${Math.round(closest.distanceNum).toLocaleString()} km</p>
+    </div>
+  `;
 }
 
 function renderPage() {
@@ -88,8 +159,9 @@ function renderPage() {
 
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const endIndex = startIndex + ITEMS_PER_PAGE;
-  const pageData = asteroidsData.slice(startIndex, endIndex);
+  const pageData = filteredAsteroidsData.slice(startIndex, endIndex);
 
+  // Array.prototype.map() execution
   asteroidList.innerHTML = pageData.map(a => {
     const hazardClass = a.isHazardous ? "hazardous" : "safe";
     const badgeHtml = a.isHazardous 
@@ -135,7 +207,7 @@ function renderPage() {
 }
 
 function setupPagination() {
-  const totalPages = Math.ceil(asteroidsData.length / ITEMS_PER_PAGE);
+  const totalPages = Math.ceil(filteredAsteroidsData.length / ITEMS_PER_PAGE);
   if(totalPages <= 1) {
     paginationContainer.innerHTML = "";
     return;
