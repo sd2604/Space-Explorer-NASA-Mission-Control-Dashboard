@@ -20,15 +20,18 @@
       href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="../style_files/style.css" />
+    <link rel="stylesheet" href="../styles/main.css" />
     <link rel="stylesheet" href="../style_files/apod.css" />
     <link rel="stylesheet" href="../style_files/favorites.css" />
     <link rel="stylesheet" href="../style_files/asteroid.css" />
-    <link rel="stylesheet" href="../style_files/iss.css" />
+    <link rel="stylesheet" href="../styles/iss.css" />
 
     <!-- Background -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
+    <script>
+      window.API_KEY = "Cj3K2i5DrgI4SPecivHDskyVd8PdXHzAZu5yPyN3";
+    </script>
   </head>
 
   <body class="dashboard-active">
@@ -238,12 +241,15 @@
       <img class="modal-content" id="lightbox-img" />
       <div id="lightbox-caption"></div>
     </div>
+    <script src="../scripts/api.js"></script>
+    <script src="../scripts/utils.js"></script>
+    <script src="../scripts/ui.js"></script>
     <script src="../script_files/loader.js"></script>
     <script src="../script_files/favorites.js"></script>
     <script src="../script_files/apod.js"></script>
     <script src="../script_files/asteroid.js"></script>
     <script src="../script_files/rover.js"></script>
-    <script src="../script_files/iss.js"></script>
-    <script src="../script_files/main.js"></script>
+    <script src="../scripts/iss.js"></script>
+    <script src="../scripts/main.js"></script>
   </body>
 </html>
