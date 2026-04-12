@@ -1,9 +1,27 @@
 .grid-layout {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 2.5rem;
-  margin-top: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.2rem;
+  margin-top: 1.5rem;
   align-items: stretch;
+  max-height: 65vh;
+  overflow-y: auto;
+  padding: 0.5rem;
+}
+
+/* Custom scrollbar for grid layout */
+.grid-layout::-webkit-scrollbar {
+  width: 6px;
+}
+.grid-layout::-webkit-scrollbar-track {
+  background: transparent;
+}
+.grid-layout::-webkit-scrollbar-thumb {
+  background: rgba(0, 212, 255, 0.3);
+  border-radius: 10px;
+}
+body.light .grid-layout::-webkit-scrollbar-thumb {
+  background: rgba(11, 61, 145, 0.3);
 }
 
 /* Controls */
@@ -68,7 +86,7 @@ body.light #load-asteroids:hover {
 }
 
 #search-asteroids::placeholder {
-  color: rgba(224, 250, 255, 0.5);
+  color: rgba(20, 164, 193, 0.5);
 }
 
 #search-asteroids:focus,
@@ -149,21 +167,9 @@ body.light .insight-box {
 
 /* Asteroid Cards */
 .asteroid-card {
-  background: linear-gradient(135deg, rgba(5, 12, 25, 0.8) 0%, rgba(0, 212, 255, 0.05) 100%);
-  border: 1px solid rgba(0, 212, 255, 0.25);
-  border-radius: var(--radius-lg);
-  padding: 1.8rem;
-  position: relative;
-  overflow: hidden;
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease, border-color 0.4s;
-  backdrop-filter: blur(20px);
-  box-shadow: inset 0 0 20px rgba(0, 212, 255, 0.05), 0 8px 25px rgba(0, 0, 0, 0.4);
-}
-
-body.light .asteroid-card {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(240, 249, 255, 0.9) 100%);
-  border-color: rgba(11, 61, 145, 0.2);
-  box-shadow: inset 0 0 15px rgba(11, 61, 145, 0.02), 0 4px 15px rgba(0, 0, 0, 0.05);
+  padding: 1.2rem;
+  display: flex;
+  flex-direction: column;
 }
 
 /* Tech grid overlay */
@@ -226,9 +232,9 @@ body.light .asteroid-card.safe {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   border-bottom: 1px solid rgba(0, 212, 255, 0.2);
-  padding-bottom: 1rem;
+  padding-bottom: 0.8rem;
 }
 
 body.light .ast-header {
@@ -237,13 +243,13 @@ body.light .ast-header {
 
 .ast-header h3 {
   font-family: 'Orbitron', var(--font-heading);
-  font-size: 1.3rem;
+  font-size: 1.1rem;
   margin: 0;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   font-weight: 700;
-  letter-spacing: 2px;
+  letter-spacing: 1px;
   color: #e0faff;
   text-shadow: 0 2px 10px rgba(0, 212, 255, 0.8);
 }
@@ -298,8 +304,8 @@ body.light .badge-safe {
 .ast-data {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
-  margin-bottom: 2rem;
+  gap: 1rem;
+  margin-bottom: 1.2rem;
 }
 
 .data-item {
@@ -308,22 +314,22 @@ body.light .badge-safe {
 }
 
 .data-label {
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   color: #a0aec0;
   text-transform: uppercase;
-  opacity: 0.5;
-  letter-spacing: 1.5px;
+  opacity: 0.6;
+  letter-spacing: 1.2px;
   font-weight: 600;
-  margin-bottom: 5px;
+  margin-bottom: 3px;
 }
 
 body.light .data-label {
   color: #475569;
-  opacity: 0.7;
+  opacity: 0.8;
 }
 
 .data-val {
-  font-size: 1.25rem;
+  font-size: 1.1rem;
   font-family: var(--font-heading);
   font-weight: 600;
   color: #e0faff;
@@ -338,14 +344,14 @@ body.light .data-val {
 /* Countdown Row */
 .ast-countdown {
   background: rgba(3, 8, 16, 0.7);
-  padding: 1rem;
-  border-radius: 50px;
+  padding: 0.8rem;
+  border-radius: 30px;
   text-align: center;
   border: 1px solid rgba(0, 212, 255, 0.3);
   font-family: 'Orbitron', var(--font-heading);
   font-weight: 700;
-  font-size: 1.15rem;
-  letter-spacing: 2px;
+  font-size: 1rem;
+  letter-spacing: 1.5px;
   box-shadow: inset 0 0 15px rgba(0, 212, 255, 0.15), 0 0 20px rgba(0, 212, 255, 0.1);
 }
 

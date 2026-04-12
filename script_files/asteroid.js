@@ -31,7 +31,7 @@ sortSelect?.addEventListener("change", () => {
   sortAndRender();
 });
 
-function fetchAsteroids() {
+async function fetchAsteroids() {
   asteroidList.innerHTML = `
     <div class="skeleton-layout skeleton-active" style="display:flex; flex-direction:row; gap:15px; flex-wrap:wrap">
        <div class="skel-media" style="width:300px; height:200px"></div>
@@ -41,49 +41,46 @@ function fetchAsteroids() {
   `;
   
   const today = new Date().toISOString().split("T")[0];
-  const url = `https://api.nasa.gov/neo/rest/v1/feed?start_date=${today}&end_date=${today}&api_key=${window.API_KEY}`;
+  const url = `https://api.nasa.gov/neo/rest/v1/feed?start_date=${today}&end_date=${today}&api_key=${window.API_KEY || 'DEMO_KEY'}`;
 
-  fetch(url)
-    .then(res => res.json())
-    .then(data => {
-      asteroidsData = data.near_earth_objects[today] || [];
-      
-      if (asteroidsData.length === 0) {
-        asteroidList.innerHTML = `<div class="empty-state">No asteroids approaching today. Rest easy!</div>`;
-        return;
-      }
-      asteroidsData = asteroidsData.map(a => {
-        return {
-          id: a.id,
-          name: a.name.replace(/[^\w\s-]/gi, ''),
-          sizeFormatter: Math.round(a.estimated_diameter.meters.estimated_diameter_max),
-          distanceNum: parseFloat(a.close_approach_data[0].miss_distance.kilometers),
-          speedNum: parseFloat(a.close_approach_data[0].relative_velocity.kilometers_per_hour),
-          isHazardous: a.is_potentially_hazardous_asteroid,
-          approachTimeStr: a.close_approach_data[0].close_approach_date_full
-        };
-      });
-
-      // Map baseline to our working frame
-      filteredAsteroidsData = [...asteroidsData];
-
-      filterGroup.classList.remove("hidden");
-      insightsPanel.classList.remove("hidden");
-      paginationContainer.classList.remove("hidden");
-      sortSelect.value = "distance";
-      hazardSelect.value = "all";
-      searchInput.value = "";
-      
-      applyFilters();
-    })
-    .catch((err) => {
-      console.error(err);
-      asteroidList.innerHTML = `
-        <div class="empty-state">
-           <i class="fa-solid fa-satellite-dish fa-3x"></i>
-           <p>Failed to collect NeoWs data.</p>
-        </div>`;
+  try {
+    const data = await window.nasaFetch(url);
+    asteroidsData = data.near_earth_objects[today] || [];
+    
+    if (asteroidsData.length === 0) {
+      asteroidList.innerHTML = `<div class="empty-state">No asteroids approaching today. Rest easy!</div>`;
+      return;
+    }
+    asteroidsData = asteroidsData.map(a => {
+      return {
+        id: a.id,
+        name: a.name.replace(/[^\w\s-]/gi, ''),
+        sizeFormatter: Math.round(a.estimated_diameter.meters.estimated_diameter_max),
+        distanceNum: parseFloat(a.close_approach_data[0].miss_distance.kilometers),
+        speedNum: parseFloat(a.close_approach_data[0].relative_velocity.kilometers_per_hour),
+        isHazardous: a.is_potentially_hazardous_asteroid,
+        approachTimeStr: a.close_approach_data[0].close_approach_date_full
+      };
     });
+
+    filteredAsteroidsData = [...asteroidsData];
+
+    filterGroup.classList.remove("hidden");
+    insightsPanel.classList.remove("hidden");
+    paginationContainer.classList.remove("hidden");
+    sortSelect.value = "distance";
+    hazardSelect.value = "all";
+    searchInput.value = "";
+    
+    applyFilters();
+  } catch (err) {
+    console.error(err);
+    asteroidList.innerHTML = `
+      <div class="empty-state">
+         <i class="fa-solid fa-satellite-dish fa-3x"></i>
+         <p>${err.message || 'Failed to collect NeoWs data.'}</p>
+      </div>`;
+  }
 }
 
 function applyFilters() {
@@ -172,7 +169,7 @@ function renderPage() {
     const speedFormatted = a.speedNum.toLocaleString(undefined, { maximumFractionDigits: 0 });
 
     return `
-      <div class="asteroid-card ${hazardClass}">
+      <div class="nasa-card asteroid-card ${hazardClass}">
         <div class="ast-header">
           <h3><i class="fa-solid fa-meteor"></i> ${a.name}</h3>
           ${badgeHtml}

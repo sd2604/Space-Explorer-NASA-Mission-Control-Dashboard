@@ -1,109 +1,448 @@
-
-.iss-container {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-}
-
-@media (min-width: 900px) {
-  .iss-container {
-    flex-direction: row;
-  }
-  .iss-stats {
-    flex: 1;
-  }
-  .iss-map-container {
-    flex: 2;
-  }
-}
-.iss-stats {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
-  padding: 2rem;
-}
-
-.stat-box {
-  background: var(--surface-2);
-  padding: 1.5rem;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border-color);
-  text-align: center;
-  transition: transform 0.3s ease;
-}
-
-.stat-box:hover {
-  transform: translateY(-3px);
-  border-color: var(--primary-accent);
-}
-
-.stat-box h4 {
-  font-size: 0.9rem;
-  color: var(--text-secondary);
-  text-transform: uppercase;
-  margin-bottom: 0.5rem;
-}
-
-.stat-box p {
-  font-family: var(--font-heading);
-  font-size: 1.8rem;
-  font-weight: 700;
-  color: var(--text-primary);
+/* ISS Live Command Center - Dedicated Styles */
+body.iss-dashboard {
   margin: 0;
-}
-.iss-map-container {
-  position: relative;
-  min-height: 400px;
-  overflow: hidden;
-  padding: 0 !important;
-  border: 1px solid var(--primary-accent) !important;
-  box-shadow: inset 0 0 30px rgba(14, 165, 233, 0.1), var(--border-glow);
+  padding: 0;
+  overflow-x: hidden;
+  background-color: #030712;
+  color: #e2e8f0;
+  font-family: 'Inter', sans-serif;
 }
 
-#iss-map-placeholder {
-  position: absolute;
-  inset: 0;
-  background: var(--surface-2);
+/* Layout adjustments */
+.iss-hero {
+  text-align: center;
+  padding: 40px 20px;
+  background: radial-gradient(circle at 50% -20%, rgba(14, 165, 233, 0.15) 0%, transparent 60%);
+}
+
+.iss-hero h1 {
+  font-family: 'Orbitron', 'Space Grotesk', sans-serif;
+  font-size: 3rem;
+  margin-bottom: 10px;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-shadow: 0 0 15px rgba(14, 165, 233, 0.8), 0 0 30px rgba(14, 165, 233, 0.4);
+  animation: textGlow 2s ease-in-out infinite alternate;
+}
+
+.iss-hero p {
+  color: #94a3b8;
+  font-size: 1.2rem;
+  letter-spacing: 1px;
+}
+
+/* Dashboard Grid */
+.iss-grid {
+  display: grid;
+  grid-template-columns: 350px 1fr;
+  gap: 25px;
+  padding: 0 40px 40px;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+@media (max-width: 1100px) {
+  .iss-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Glass Panels */
+.iss-glass-panel {
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(14, 165, 233, 0.2);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.iss-glass-panel:hover {
+  border-color: rgba(14, 165, 233, 0.4);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 20px rgba(14, 165, 233, 0.15);
+}
+
+.iss-panel-title {
+  font-family: 'Orbitron', sans-serif;
+  color: #38bdf8;
+  margin-top: 0;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.2rem;
+  border-bottom: 1px solid rgba(14, 165, 233, 0.2);
+  padding-bottom: 10px;
+}
+
+/* Telemetry Stats */
+.telemetry-board {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  z-index: 5;
+  gap: 20px;
 }
 
-#iss-map-frame {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  border: none;
-  z-index: 10;
-}
-.pulsing-dot {
-  width: 20px;
-  height: 20px;
-  background-color: var(--primary-accent);
-  border-radius: 50%;
+.stat-item {
+  background: rgba(3, 7, 18, 0.4);
+  padding: 15px;
+  border-radius: 10px;
+  border-left: 4px solid #0ea5e9;
   position: relative;
-  margin-bottom: 20px;
-  box-shadow: 0 0 15px var(--primary-accent);
+  overflow: hidden;
 }
 
-.pulsing-dot::before {
+.stat-item::before {
   content: '';
   position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  width: 20px;
-  height: 20px;
-  background-color: var(--primary-accent);
-  border-radius: 50%;
-  animation: radar-pulse 2s infinite cubic-bezier(0.16, 1, 0.3, 1);
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(14, 165, 233, 0.05), transparent);
+  transform: translateX(-100%);
+  animation: sweep 4s infinite linear;
 }
 
-@keyframes radar-pulse {
-  0% { width: 20px; height: 20px; opacity: 1; }
-  100% { width: 150px; height: 150px; opacity: 0; box-shadow: 0 0 20px var(--primary-accent); }
+.stat-label {
+  font-size: 0.85rem;
+  color: #94a3b8;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+  display: block;
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #fff;
+  font-family: 'Space Grotesk', monospace;
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+}
+
+.stat-unit {
+  font-size: 0.9rem;
+  color: #0ea5e9;
+}
+
+/* Live Status Indicator */
+.live-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(16, 185, 129, 0.1);
+  color: #10b981;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  margin-top: 10px;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.pulse-dot {
+  width: 10px;
+  height: 10px;
+  background-color: #10b981;
+  border-radius: 50%;
+  box-shadow: 0 0 10px #10b981;
+  animation: pulse 1.5s infinite;
+}
+
+/* Map Container */
+.map-wrapper {
+  height: 500px;
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+  border: 1px solid rgba(14, 165, 233, 0.3);
+  box-shadow: inset 0 0 50px rgba(0,0,0,0.8);
+}
+
+#map {
+  width: 100%;
+  height: 100%;
+  background-color: #030712 !important;
+  z-index: 1;
+}
+
+/* Removed old Leaflet Radar Marker styling */
+
+/* Crew Grid */
+.crew-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.crew-card {
+  background: rgba(14, 165, 233, 0.05);
+  border: 1px solid rgba(14, 165, 233, 0.1);
+  padding: 15px;
+  border-radius: 10px;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.crew-card:hover {
+  background: rgba(14, 165, 233, 0.15);
+  transform: translateY(-3px);
+  border-color: rgba(14, 165, 233, 0.3);
+}
+
+.crew-icon {
+  font-size: 2rem;
+  color: #38bdf8;
+  margin-bottom: 10px;
+}
+
+.crew-name {
+  font-weight: 600;
+  color: #fff;
+}
+.crew-role {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  margin-top: 5px;
+  text-transform: uppercase;
+}
+
+/* Location Alert */
+#location-alert {
+  padding: 15px 20px;
+  border-radius: 10px;
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.alert-hidden {
+  opacity: 0;
+  visibility: hidden;
+  height: 0;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.alert-active {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  color: #f87171;
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.2);
+  animation: glowAlert 2s infinite alternate;
+}
+
+/* Animations */
+@keyframes textGlow {
+  0% { text-shadow: 0 0 10px rgba(14, 165, 233, 0.5); }
+  100% { text-shadow: 0 0 20px rgba(14, 165, 233, 0.9), 0 0 40px rgba(14, 165, 233, 0.5); }
+}
+
+@keyframes sweep {
+  0% { transform: translateX(-100%); }
+  50% { transform: translateX(100%); }
+  100% { transform: translateX(100%); }
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+  70% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
+@keyframes radarPing {
+  0% { transform: scale(0.1); opacity: 1; }
+  100% { transform: scale(1); opacity: 0; border-width: 0px; }
+}
+
+@keyframes glowAlert {
+  0% { box-shadow: 0 0 5px rgba(239, 68, 68, 0.2); }
+  100% { box-shadow: 0 0 20px rgba(239, 68, 68, 0.4); }
+}
+
+/* 3D Globe Container */
+#globe-container {
+  width: 100%;
+  height: 100%;
+  background-color: transparent !important;
+  z-index: 10;
+  cursor: grab;
+}
+
+#globe-container:active {
+  cursor: grabbing;
+}
+
+/* Cinematic Radar Scan Overlay */
+.radar-scan-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  pointer-events: none; /* Let clicks pass through to globe */
+  z-index: 20;
+  overflow: hidden;
+  box-shadow: inset 0 0 100px rgba(14, 165, 233, 0.1);
+}
+
+.radar-blade {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  background: conic-gradient(from 0deg, transparent 70%, rgba(14, 165, 233, 0.4) 100%);
+  transform-origin: 0% 0%;
+  animation: radarScan 4s linear infinite;
+  border-right: 2px solid rgba(14, 165, 233, 0.8);
+}
+
+@keyframes radarScan {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ISS Marker Base (If using HTML overlay, but WebGL will handle glowing naturally) */
+.iss-glowing-marker {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: #fff;
+  box-shadow: 0 0 15px #00d4ff, 0 0 30px #00d4ff;
+  animation: pulse 1s infinite alternate;
+}
+
+/* --- IMMERSION: CRT FLICKER & SCANLINES --- */
+.crt-flicker::after {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+  z-index: 999;
+  background-size: 100% 2px, 3px 100%;
+  pointer-events: none;
+  animation: crtFlicker 0.15s infinite;
+  opacity: 0.8;
+}
+
+@keyframes crtFlicker {
+  0% { opacity: 0.8; }
+  50% { opacity: 0.85; }
+  100% { opacity: 0.8; }
+}
+
+/* --- AUDIO HUD BUTTON --- */
+.hud-audio-btn {
+  position: fixed;
+  top: 80px;
+  right: 30px;
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(14, 165, 233, 0.4);
+  color: #94a3b8;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  z-index: 1001;
+  transition:
+    color 0.35s ease,
+    border-color 0.35s ease,
+    background 0.35s ease,
+    box-shadow 0.45s ease;
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hud-audio-btn__icon {
+  display: inline-block;
+  width: 1.1em;
+  text-align: center;
+  transition:
+    color 0.35s ease,
+    transform 0.35s ease,
+    opacity 0.35s ease;
+}
+
+.hud-audio-btn__label {
+  transition: color 0.35s ease, opacity 0.35s ease;
+}
+
+.hud-audio-btn:hover {
+  background: rgba(14, 165, 233, 0.2);
+  color: #fff;
+  border-color: #0ea5e9;
+  box-shadow: 0 0 15px rgba(14, 165, 233, 0.4);
+}
+
+.hud-audio-btn.audio-on {
+  color: #7dd3fc;
+  border-color: rgba(14, 165, 233, 0.75);
+  animation: hudAudioGlow 2.8s ease-in-out infinite alternate;
+}
+
+.hud-audio-btn.audio-on:hover {
+  animation: hudAudioGlow 2.8s ease-in-out infinite alternate;
+}
+
+@keyframes hudAudioGlow {
+  0% {
+    box-shadow:
+      0 0 10px rgba(14, 165, 233, 0.35),
+      0 0 22px rgba(14, 165, 233, 0.18),
+      inset 0 0 12px rgba(14, 165, 233, 0.06);
+  }
+  100% {
+    box-shadow:
+      0 0 18px rgba(14, 165, 233, 0.55),
+      0 0 36px rgba(14, 165, 233, 0.22),
+      inset 0 0 16px rgba(14, 165, 233, 0.1);
+  }
+}
+
+/* --- MISSION ACTIVE BADGE --- */
+.mission-active-badge {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+  border: 1px solid #ef4444;
+  font-size: 0.7rem;
+  padding: 3px 8px;
+  border-radius: 12px;
+  margin-left: auto; /* Push to right inside flex */
+  animation: missionPulse 2s infinite;
+  font-weight: 700;
+}
+
+@keyframes missionPulse {
+  0% { box-shadow: 0 0 5px rgba(239, 68, 68, 0); }
+  50% { box-shadow: 0 0 15px rgba(239, 68, 68, 0.5); }
+  100% { box-shadow: 0 0 5px rgba(239, 68, 68, 0); }
+}
+
+/* Data Pulse Animation for UI */
+.data-flash {
+  animation: dataFader 0.5s ease-out;
+}
+
+@keyframes dataFader {
+  0% { background: rgba(14, 165, 233, 0.3); }
+  100% { background: transparent; }
 }

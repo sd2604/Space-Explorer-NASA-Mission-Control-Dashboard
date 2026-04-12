@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="../style_files/style.css" />
     <link rel="stylesheet" href="../style_files/apod.css" />
     <link rel="stylesheet" href="../style_files/favorites.css" />
@@ -18,6 +19,9 @@
     <!-- Background -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
+    <script>
+      window.API_KEY = "Cj3K2i5DrgI4SPecivHDskyVd8PdXHzAZu5yPyN3";
+    </script>
   </head>
 
   <body>
@@ -84,30 +88,79 @@
         <!-- 1. DASHBOARD OVERVIEW -->
         <section id="dashboard" class="view-section active">
           <div class="hero">
-            <h1>Welcome to Mission Control</h1>
-            <p>Portal to explore the universe using NASA's open APIs.</p>
-            <div class="hero-stats">
-              <div class="stat-card stagger-1" data-link="apod">
-                <i class="fa-solid fa-star"></i>
-                <h3>View APOD</h3>
-                <p>Astronomy Photo of the Day</p>
+            <h1 id="dynamic-greeting">Welcome to Mission Control</h1>
+            <p id="dynamic-greeting-sub">Portal to explore the universe using NASA's open APIs.</p>
+            
+            <div class="dashboard-layout">
+              <!-- Left Column: Status & Gamification -->
+              <div class="dashboard-sidebar stagger-1">
+                <div class="glass-card status-panel">
+                   <h3><i class="fa-solid fa-satellite-dish"></i> Live Comms</h3>
+                   <ul id="system-ticker" class="ticker-list">
+                     <li><i class="fa-solid fa-circle-notch fa-spin"></i> Establishing link...</li>
+                   </ul>
+                </div>
+
+                <div class="glass-card gamification-panel">
+                   <h3><i class="fa-solid fa-medal"></i> Exploration Score</h3>
+                   <div class="progress-bar-container">
+                      <div class="progress-bar" id="score-bar" style="width: 0%;"></div>
+                   </div>
+                   <p class="score-text">Status: <span id="mission-score">0</span> / 1000 XP</p>
+                   <div class="badges-panel" id="badges-container">
+                      <!-- Badges injected dynamically -->
+                   </div>
+                </div>
               </div>
-              <div class="stat-card stagger-2" data-link="asteroids">
-                <i class="fa-solid fa-meteor"></i>
-                <h3>Track Asteroids</h3>
-                <p>Near Earth Objects</p>
-              </div>
-              <div class="stat-card stagger-3" data-link="rover">
-                <i class="fa-solid fa-robot"></i>
-                <h3>Mars Rovers</h3>
-                <p>Explore planetary photos</p>
+
+              <!-- Right Column: Today in Space & Quick Actions -->
+              <div class="dashboard-main">
+                <div class="glass-card today-in-space stagger-2">
+                   <h3><i class="fa-solid fa-calendar-day"></i> Today in Space</h3>
+                   <div id="today-apod-preview" class="today-preview-content">
+                     <div class="skeleton-active" style="width: 100%">
+                        <div class="skel-media"></div>
+                        <div class="skel-line skel-title"></div>
+                     </div>
+                   </div>
+                </div>
+
+                <div class="hero-stats stagger-3">
+                  <div class="stat-card" data-link="apod">
+                    <i class="fa-solid fa-star"></i>
+                    <h3>View APOD</h3>
+                    <p>Astronomy Photo of the Day</p>
+                  </div>
+                  <div class="stat-card" data-link="asteroids">
+                    <i class="fa-solid fa-meteor"></i>
+                    <h3>Track Asteroids</h3>
+                    <p>Near Earth Objects</p>
+                  </div>
+                  <div class="stat-card" data-link="rover">
+                    <i class="fa-solid fa-robot"></i>
+                    <h3>Mars Rovers</h3>
+                    <p>Explore planetary photos</p>
+                  </div>
+                </div>
               </div>
             </div>
+            
+            <!-- Shooting Star Scroll Indicator -->
+            <div class="scroll-indicator-container stagger-4">
+              <div class="shooting-star" onclick="document.getElementById('apod').scrollIntoView({ behavior: 'smooth', block: 'start' })">
+                <div class="star-tail"></div>
+                <div class="star-head"></div>
+                <div class="spark spark-1"></div>
+                <div class="spark spark-2"></div>
+                <div class="spark spark-3"></div>
+              </div>
+            </div>
+
           </div>
         </section>
 
         <!-- 2. APOD SECTION -->
-        <section id="apod" class="view-section hidden">
+        <section id="apod" class="view-section">
           <div class="section-header">
             <h2>Astronomy Picture of the Day</h2>
             <p>Discover the cosmos! Each day a different image or photograph of our fascinating universe is featured.</p>
@@ -135,7 +188,7 @@
         </section>
 
         <!-- 3. ASTEROID TRACKER -->
-        <section id="asteroids" class="view-section hidden">
+        <section id="asteroids" class="view-section">
           <div class="section-header">
             <h2>Near-Earth Asteroids</h2>
             <p>Track objects approaching Earth today based on NASA NeoWs API.</p>
@@ -166,7 +219,7 @@
         </section>
 
         <!-- 4. MARS ROVER -->
-        <section id="rover" class="view-section hidden">
+        <section id="rover" class="view-section">
           <div class="section-header">
             <h2>Mars Rover Explorer</h2>
             <p>View latest images captured by Mars Rovers.</p>
@@ -177,22 +230,25 @@
               <label for="rover-select">Rover:</label>
               <select id="rover-select">
                 <option value="curiosity">Curiosity</option>
-                <option value="perseverance">Perseverance</option>
                 <option value="opportunity">Opportunity</option>
+                <option value="spirit">Spirit</option>
               </select>
             </div>
             <div class="control-item">
               <label for="camera-select">Camera:</label>
               <select id="camera-select">
-                <option value="all">All Cameras</option>
-                <option value="FHAZ">Front Hazard Avoidance</option>
-                <option value="RHAZ">Rear Hazard Avoidance</option>
-                <option value="NAVCAM">Navigation Camera</option>
+                <option value="">All Cameras</option>
+                <option value="fhaz">Front Hazard</option>
+                <option value="rhaz">Rear Hazard</option>
+                <option value="mast">Mast</option>
+                <option value="chemcam">ChemCam</option>
+                <option value="mahli">MAHLI</option>
+                <option value="navcam">NavCam</option>
               </select>
             </div>
             <div class="control-item">
               <label for="sol-input">Martian Sol:</label>
-              <input type="number" id="sol-input" value="1000" min="1" max="5000" />
+              <input type="number" id="sol-input" value="100" min="1" max="5000" />
             </div>
             <button id="load-rover-btn" class="primary-btn"><i class="fa-solid fa-camera"></i> Fetch Photos</button>
           </div>
@@ -206,7 +262,7 @@
         </section>
 
         <!-- 5. ISS TRACKER -->
-        <section id="iss" class="view-section hidden">
+        <section id="iss" class="view-section">
           <div class="section-header">
             <h2>Live ISS Tracker</h2>
             <p>Real-time location of the International Space Station.</p>
@@ -238,13 +294,13 @@
                 <div class="pulsing-dot"></div>
                 <p>Tracking Station...</p>
               </div>
-              <iframe id="iss-map-frame" width="100%" height="400" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="" class="hidden"></iframe>
+              <div id="iss-map-frame" class="hidden" style="width:100%; height:100%; position:absolute; inset:0; z-index:10;"></div>
             </div>
           </div>
         </section>
 
         <!-- 6. FAVORITES -->
-        <section id="favorites" class="view-section hidden">
+        <section id="favorites" class="view-section">
           <div class="section-header">
             <h2>Favorite Images</h2>
             <p>Your saved cosmic discoveries.</p>
@@ -264,12 +320,14 @@
       <img class="modal-content" id="lightbox-img" />
       <div id="lightbox-caption"></div>
     </div>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="../script_files/loader.js"></script>
+    <script src="../script_files/main.js"></script>
     <script src="../script_files/favorites.js"></script>
     <script src="../script_files/apod.js"></script>
     <script src="../script_files/asteroid.js"></script>
     <script src="../script_files/rover.js"></script>
     <script src="../script_files/iss.js"></script>
-    <script src="../script_files/main.js"></script>
+    <script src="../script_files/dashboard.js"></script>
   </body>
 </html>

@@ -46,9 +46,10 @@ body.light #apod-content {
 
 /* Image Container */
 .apod-media-container {
-  flex: 1.2;
+  flex: 0.8;
   position: relative;
-  min-height: 400px;
+  min-height: 300px;
+  max-height: 600px;
   background: rgba(3, 8, 16, 0.8);
   border-radius: 16px;
   overflow: hidden;
@@ -103,10 +104,10 @@ body.light .apod-media-container:hover {
 
 /* Details Section */
 .apod-details {
-  flex: 1;
+  flex: 1.2;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
 }
 
 /* Typography */
@@ -156,11 +157,30 @@ body.light .badge {
 }
 
 .apod-explanation {
-  font-size: 1.05rem;
-  line-height: 1.8;
-  margin-bottom: 2.5rem;
-  color: #a0aec0; 
+  font-size: 2rem;
+  line-height: 1.9;
+  margin-bottom: 2rem;
+  color: #a0aec0;
   font-weight: 400;
+  max-height: 300px;
+  overflow-y: auto;
+  padding-right: 15px;
+}
+
+/* Custom Webkit scrollbar for the explanation text box */
+.apod-explanation::-webkit-scrollbar {
+  width: 6px;
+}
+.apod-explanation::-webkit-scrollbar-track {
+  background: rgba(0, 212, 255, 0.05);
+  border-radius: 10px;
+}
+.apod-explanation::-webkit-scrollbar-thumb {
+  background: rgba(0, 212, 255, 0.3);
+  border-radius: 10px;
+}
+body.light .apod-explanation::-webkit-scrollbar-thumb {
+  background: rgba(11, 61, 145, 0.3);
 }
 
 body.light .apod-explanation {
@@ -172,17 +192,111 @@ body.light .apod-explanation {
   display: flex;
   gap: 15px;
   margin-top: auto;
+  align-items: center;
   flex-wrap: wrap;
 }
 
-.apod-actions button, .apod-controls button, .download-btn {
+.apod-action-btn {
+  background: rgba(5, 12, 25, 0.6);
+  border: 1px solid rgba(0, 212, 255, 0.3);
+  color: #e0faff;
+  font-family: 'Orbitron', var(--font-body);
+  font-weight: 600;
+  letter-spacing: 1px;
+  padding: 0.6rem 1.2rem;
+  border-radius: 30px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: inset 0 0 10px rgba(0, 212, 255, 0.05), 0 4px 15px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(10px);
+}
+
+.apod-action-btn i {
+  font-size: 1.1em;
+}
+
+.apod-action-btn:hover {
+  transform: translateY(-3px) scale(1.05);
+  background: rgba(0, 212, 255, 0.15);
+  border-color: #00d4ff;
+  color: #fff;
+  box-shadow: inset 0 0 15px rgba(0, 212, 255, 0.3), 0 0 25px rgba(0, 212, 255, 0.4);
+}
+
+body.light .apod-action-btn {
+  background: rgba(255, 255, 255, 0.8);
+  border-color: rgba(11, 61, 145, 0.2);
+  color: #0b3d91;
+  box-shadow: inset 0 0 10px rgba(11, 61, 145, 0.02), 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+body.light .apod-action-btn:hover {
+  background: rgba(11, 61, 145, 0.1);
+  border-color: #0b3d91;
+  box-shadow: inset 0 0 15px rgba(11, 61, 145, 0.1), 0 0 20px rgba(11, 61, 145, 0.2);
+}
+
+/* HD Toggle Switch Design */
+.hd-toggle-btn {
+  padding: 0.4rem 0.6rem 0.4rem 1.2rem;
+  gap: 12px;
+}
+
+.hd-toggle-btn .hd-icon {
+  font-weight: 800;
+}
+
+.hd-toggle-btn .hd-status {
+  background: rgba(0, 0, 0, 0.5);
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  transition: all 0.3s ease;
+  color: #94a3b8;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.hd-toggle-btn.hd-on {
+  border-color: #0ea5e9;
+  box-shadow: inset 0 0 15px rgba(14, 165, 233, 0.2), 0 0 20px rgba(14, 165, 233, 0.3);
+}
+
+.hd-toggle-btn.hd-on .hd-status {
+  background: #0ea5e9;
+  color: #fff;
+  border-color: #38bdf8;
+  box-shadow: 0 0 15px rgba(14, 165, 233, 0.6);
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+}
+
+body.light .hd-status {
+  background: #f1f5f9;
+  border-color: rgba(11, 61, 145, 0.1);
+  color: #475569;
+}
+
+body.light .hd-toggle-btn.hd-on {
+  border-color: #0b3d91;
+}
+
+body.light .hd-toggle-btn.hd-on .hd-status {
+  background: #0b3d91;
+  color: #fff;
+  border-color: #1e3a8a;
+  box-shadow: 0 0 15px rgba(11, 61, 145, 0.4);
+}
+
+.apod-controls button {
   box-shadow: 0 0 15px rgba(0, 212, 255, 0.15);
   border-radius: 20px;
   transition: all 0.4s ease;
   font-family: var(--font-body);
 }
 
-.apod-actions .primary-btn, .apod-controls .primary-btn, .download-btn {
+.apod-controls .primary-btn {
   background: rgba(0, 212, 255, 0.1);
   color: #00d4ff;
   border: 1px solid rgba(0, 212, 255, 0.4);
@@ -190,7 +304,7 @@ body.light .apod-explanation {
   letter-spacing: 1px;
 }
 
-.apod-actions .primary-btn:hover, .apod-controls .primary-btn:hover, .download-btn:hover {
+.apod-controls .primary-btn:hover {
   box-shadow: 0 0 25px rgba(0, 212, 255, 0.5), inset 0 0 15px rgba(0, 212, 255, 0.2);
   background: rgba(0, 212, 255, 0.2);
   color: #e0faff;
@@ -198,27 +312,27 @@ body.light .apod-explanation {
   transform: translateY(-2px);
 }
 
-body.light .apod-actions .primary-btn:hover, body.light .apod-controls .primary-btn:hover, body.light .download-btn:hover {
+body.light .apod-controls .primary-btn:hover {
   background: rgba(11, 61, 145, 0.15);
   color: #0b3d91;
   border-color: #0b3d91;
   box-shadow: 0 0 20px rgba(11, 61, 145, 0.2);
 }
 
-.apod-actions .secondary-btn, .apod-controls .secondary-btn {
+.apod-controls .secondary-btn {
   background: rgba(5, 12, 25, 0.8);
   border: 1px solid rgba(0, 212, 255, 0.3);
   color: #e0faff;
 }
 
-.apod-actions .secondary-btn:hover, .apod-controls .secondary-btn:hover {
+.apod-controls .secondary-btn:hover {
   border-color: #00d4ff;
   box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
   transform: translateY(-2px);
   color: #00d4ff;
 }
 
-body.light .apod-actions .secondary-btn:hover, body.light .apod-controls .secondary-btn:hover {
+body.light .apod-controls .secondary-btn:hover {
   border-color: rgba(11, 61, 145, 0.5);
   box-shadow: 0 0 10px rgba(11, 61, 145, 0.1);
   color: #0b3d91;

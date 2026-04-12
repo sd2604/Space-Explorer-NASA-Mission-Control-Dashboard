@@ -14,12 +14,16 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="../style_files/style.css" />
     <link rel="stylesheet" href="../style_files/apod.css" />
     <link rel="stylesheet" href="../style_files/favorites.css" />
     <link rel="stylesheet" href="../style_files/asteroid.css" />
-    <link rel="stylesheet" href="../style_files/rover.css" />
     <link rel="stylesheet" href="../style_files/iss.css" />
 
     <!-- Background -->
@@ -48,8 +52,11 @@
     <div class="app-container">
       <!-- MAIN NAVBAR -->
       <nav class="top-navbar">
-        <div class="logo">
-          <span class="logo-text">MISSION CONTROL</span>
+        <div class="navbar-brand">
+          <div class="logo-wrapper">
+            <!-- <i class="fa-solid fa-satellite-dish navbar-logo-icon"></i> -->
+            <h1 class="navbar-logo-text">MISSION CONTROL</h1>
+          </div>
         </div>
 
         <ul class="nav-links">
@@ -64,13 +71,11 @@
             <i class="fa-solid fa-meteor"></i>
             <span class="nav-text">Asteroids</span>
           </li>
-          <li data-target="rover">
-            <i class="fa-solid fa-robot"></i>
-            <span class="nav-text">Mars Rover</span>
-          </li>
-          <li data-target="iss">
-            <i class="fa-solid fa-globe"></i>
-            <span class="nav-text">ISS Tracker</span>
+          <li>
+            <a href="iss.html" style="text-decoration: none; color: inherit; display: flex; gap: 15px; align-items: center; width: 100%;">
+              <i class="fa-solid fa-globe"></i>
+              <span class="nav-text" style="font-weight: 500;">ISS Tracker <span style="font-size: 0.6rem; background: #0ea5e9; color:#fff; padding:2px 5px; border-radius:10px; margin-left:5px;">LIVE</span></span>
+            </a>
           </li>
           <li data-target="favorites">
             <i class="fa-solid fa-heart"></i>
@@ -110,11 +115,6 @@
                 <i class="fa-solid fa-meteor"></i>
                 <h3>Track Asteroids</h3>
                 <p>Near Earth Objects</p>
-              </div>
-              <div class="stat-card stagger-3" data-link="rover">
-                <i class="fa-solid fa-robot"></i>
-                <h3>Mars Rovers</h3>
-                <p>Explore planetary photos</p>
               </div>
             </div>
           </div>
@@ -218,102 +218,6 @@
             class="pagination-controls hidden"
           ></div>
         </section>
-
-        <!-- 4. MARS ROVER -->
-        <section id="rover" class="view-section">
-          <div class="section-header">
-            <h2>Mars Rover Explorer</h2>
-            <p>View latest images captured by Mars Rovers.</p>
-          </div>
-
-          <div class="controls rover-controls glass-card stagger-1">
-            <div class="control-item">
-              <label for="rover-select">Rover:</label>
-              <select id="rover-select">
-                <option value="curiosity">Curiosity</option>
-                <option value="perseverance">Perseverance</option>
-                <option value="opportunity">Opportunity</option>
-              </select>
-            </div>
-            <div class="control-item">
-              <label for="camera-select">Camera:</label>
-              <select id="camera-select">
-                <option value="all">All Cameras</option>
-                <option value="FHAZ">Front Hazard Avoidance</option>
-                <option value="RHAZ">Rear Hazard Avoidance</option>
-                <option value="NAVCAM">Navigation Camera</option>
-              </select>
-            </div>
-            <div class="control-item">
-              <label for="sol-input">Martian Sol:</label>
-              <input
-                type="number"
-                id="sol-input"
-                value="1000"
-                min="1"
-                max="5000"
-              />
-            </div>
-            <button id="load-rover-btn" class="primary-btn">
-              <i class="fa-solid fa-camera"></i> Fetch Photos
-            </button>
-          </div>
-
-          <div id="rover-gallery" class="grid-layout gallery-grid stagger-2">
-            <div class="empty-state">
-              <i class="fa-solid fa-robot fa-3x"></i>
-              <p>Select parameters and fetch rover photos.</p>
-            </div>
-          </div>
-        </section>
-
-        <!-- 5. ISS TRACKER -->
-        <section id="iss" class="view-section">
-          <div class="section-header">
-            <h2>Live ISS Tracker</h2>
-            <p>Real-time location of the International Space Station.</p>
-          </div>
-
-          <div class="iss-container">
-            <div class="iss-stats glass-card stagger-1">
-              <div class="stat-box">
-                <h4>Latitude</h4>
-                <p id="iss-lat">--</p>
-              </div>
-              <div class="stat-box">
-                <h4>Longitude</h4>
-                <p id="iss-lng">--</p>
-              </div>
-              <div class="stat-box">
-                <h4>Velocity</h4>
-                <p id="iss-vel">-- km/h</p>
-              </div>
-              <div class="stat-box">
-                <h4>Altitude</h4>
-                <p id="iss-alt">-- km</p>
-              </div>
-            </div>
-
-            <div class="iss-map-container glass-card stagger-2">
-              <div id="iss-map-placeholder">
-                <div class="pulsing-dot"></div>
-                <p>Tracking Station...</p>
-              </div>
-              <iframe
-                id="iss-map-frame"
-                width="100%"
-                height="400"
-                frameborder="0"
-                scrolling="no"
-                marginheight="0"
-                marginwidth="0"
-                src=""
-                class="hidden"
-              ></iframe>
-            </div>
-          </div>
-        </section>
-
         <!-- 6. FAVORITES -->
         <section id="favorites" class="view-section">
           <div class="section-header">

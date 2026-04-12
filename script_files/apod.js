@@ -4,174 +4,236 @@ let isHD = false;
 
 window.apodLoaded = false;
 
-function loadAPOD(date = "") {
+let isAPODLoading = false;
+
+async function loadAPOD(date = "") {
+  if (isAPODLoading) return;
+  isAPODLoading = true;
   window.apodLoaded = true;
+
   const container = document.getElementById("apod-content");
-  if (!container) return;
+  if (!container) {
+    isAPODLoading = false;
+    return;
+  }
+
   showLoader("apod-content");
 
-  let url = `https://api.nasa.gov/planetary/apod?api_key=${window.API_KEY}&thumbs=true`;
-  if (date) url += `&date=${date}`;
+  let fetchDate = "today";
+  if (typeof date === "string" && date.trim() !== "") {
+    fetchDate = date;
+  }
 
-  fetch(url)
-    .then(res => res.json())
-    .then(data => {
-      if (data.code && data.code !== 200) {
-        container.innerHTML = `<div class="empty-state">
-           <i class="fa-solid fa-triangle-exclamation fa-3x"></i>
-           <p>${data.msg}</p>
-        </div>`;
-        return;
+  const cacheKey = `apod_cache_${fetchDate}`;
+  const cachedData = localStorage.getItem(cacheKey);
+
+  if (cachedData) {
+    try {
+      const data = JSON.parse(cachedData);
+      renderAPODData(data, container);
+      isAPODLoading = false;
+      return;
+    } catch (e) {
+      console.error("Cache parsing error", e);
+    }
+  }
+
+  const apiKey = window.API_KEY || "DEMO_KEY";
+  let url = `https://api.nasa.gov/planetary/apod?api_key=${apiKey}&thumbs=true`;
+  if (fetchDate !== "today") {
+    url += `&date=${fetchDate}`;
+  }
+
+  try {
+    const data = await window.nasaFetch(url);
+
+    localStorage.setItem(cacheKey, JSON.stringify(data));
+    if (fetchDate === "today") {
+      localStorage.setItem(`apod_cache_${data.date}`, JSON.stringify(data));
+    }
+
+    renderAPODData(data, container);
+  } catch (err) {
+    console.error("APOD Load Error:", err);
+    
+    // Check if Rate Limit occurred to provide local cache fallbacks
+    if (err.message && err.message.includes("429")) {
+      let fallbackBtnHtml = "";
+      const cachedKeys = Object.keys(localStorage).filter(k => k.startsWith("apod_cache_") && k !== "apod_cache_today");
+      if (cachedKeys.length > 0) {
+        const fallbackDate = cachedKeys[0].replace("apod_cache_", "");
+        fallbackBtnHtml = `<br><button onclick="loadAPOD('${fallbackDate}')" class="secondary-btn" style="margin-top: 1rem;"><i class="fa-solid fa-box-archive"></i> View Cached Image</button>`;
       }
-
-      currentAPODDate = data.date;
-      currentAPODData = data;
-      document.getElementById("date-input").value = data.date;
-
-      let mediaHtml = "";
-      const sourceUrl = isHD && data.hdurl ? data.hdurl : data.url;
-
-      if (data.media_type === "video") {
-        let videoUrl = data.url;
-        
-        let isEmbeddable = false;
-        let isDirectVideo = false;
-        
-        if (videoUrl.toLowerCase().endsWith(".mp4")) {
-          isDirectVideo = true;
-        } else {
-          const ytRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i;
-          const ytMatch = videoUrl.match(ytRegex);
-          const vimeoRegex = /vimeo\.com\/(?:video\/)?([0-9]+)/i;
-          const vimeoMatch = videoUrl.match(vimeoRegex);
-          
-          if (ytMatch && ytMatch[1]) {
-            videoUrl = `https://www.youtube.com/embed/${ytMatch[1]}?autoplay=0&rel=0`;
-            isEmbeddable = true;
-          } else if (vimeoMatch && vimeoMatch[1]) {
-            videoUrl = `https://player.vimeo.com/video/${vimeoMatch[1]}?autoplay=0`;
-            isEmbeddable = true;
-          }
-        }
-        
-        if (isDirectVideo) {
-          mediaHtml = `<video id="apod-video" autoplay muted loop playsinline controls>
-                         <source src="${videoUrl}" type="video/mp4">
-                       </video>`;
-        } else if (isEmbeddable) {
-          mediaHtml = `<iframe id="apod-video" src="${videoUrl}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
-        } else {
-          if (data.thumbnail_url) {
-            mediaHtml = `<div style="position:relative; width:100%; height:100%;">
-                           <img id="apod-image" src="${data.thumbnail_url}" alt="Video Thumbnail" style="opacity:1; cursor:pointer;" onclick="window.open('${data.url}', '_blank')">
-                           <div style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); background:rgba(0,0,0,0.6); padding:1.5rem 2rem; border-radius:30px; border: 1px solid rgba(0, 212, 255, 0.4); pointer-events:none; box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);">
-                              <i class="fa-solid fa-play" style="color:#00d4ff; font-size:2rem;"></i>
-                           </div>
-                         </div>`;
-          } else {
-            mediaHtml = `<div class="empty-state" style="height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding: 2rem;">
-                            <i class="fa-solid fa-link-slash fa-3x" style="color:#00d4ff; margin-bottom:1rem;"></i>
-                            <p style="color:#e0faff; font-family:'Orbitron', sans-serif; font-size:1.2rem; margin-bottom:1.5rem;">Video cannot be embedded.</p>
-                            <a href="${data.url}" target="_blank" class="primary-btn" style="text-decoration:none; display:inline-block; padding: 0.8rem 1.5rem; border-radius: 20px;"><i class="fa-solid fa-arrow-up-right-from-square"></i> Watch on NASA</a>
-                         </div>`;
-          }
-        }
-      } else {
-        mediaHtml = `<img id="apod-image" src="${sourceUrl}" alt="${data.title}" 
-                    onload="this.style.opacity=1" style="opacity:0; transition: opacity 0.5s;"
-                    onclick="window.openLightbox('${data.hdurl || data.url}', '${data.title.replace(/'/g, "\\'")}')">`;
-      }
-
-      const copyright = data.copyright ? `&copy; ${data.copyright}` : "Public Domain";
 
       container.innerHTML = `
-        <div class="apod-media-container">
-          ${mediaHtml}
-        </div>
-        <div class="apod-details">
-          <h3 class="apod-title">${data.title}</h3>
-          
-          <div class="apod-meta">
-            <span class="badge"><i class="fa-solid fa-calendar"></i> ${data.date}</span>
-            <span class="badge"><i class="fa-solid fa-camera"></i> ${copyright}</span>
-          </div>
-          
-          <p class="apod-explanation">${data.explanation}</p>
-          
-          <div class="apod-actions">
-            <button onclick="saveFavorite('${data.url}')" class="primary-btn">
-              <i class="fa-solid fa-heart"></i> Save Favorite
-            </button>
-            <button onclick="toggleHD()" class="secondary-btn" title="Toggle HD Resolution">
-              <i class="fa-solid ${isHD ? 'fa-toggle-on' : 'fa-toggle-off'}"></i> HD Config
-            </button>
-            ${data.media_type === "image" ? `
-              <button onclick="downloadImage('${data.hdurl || data.url}', '${data.title}')" class="primary-btn download-btn">
-                <i class="fa-solid fa-download"></i> Download
-              </button>
-            ` : ""}
-          </div>
-        </div>
-      `;
-    })
-    .catch((err) => {
-      console.error(err);
-      container.innerHTML = `<div class="empty-state">
-           <i class="fa-solid fa-satellite-dish fa-3x"></i>
-           <p>Failed to establish connection. Check your signal.</p>
+        <div class="empty-state" style="padding: 2rem; text-align: center;">
+          <i class="fa-solid fa-hourglass-half fa-3x" style="color: #f59e0b;"></i>
+          <p style="margin-top: 1rem; color: #fbbf24; font-weight: 500;">${err.message}</p>
+          ${fallbackBtnHtml}
         </div>`;
-    });
+    } else {
+      container.innerHTML = `
+        <div class="empty-state" style="padding: 2rem; text-align: center;">
+          <i class="fa-solid fa-satellite-dish fa-3x" style="color: #ef4444;"></i>
+          <p style="margin-top: 1rem; color: #f87171;">Failed to load APOD. ${err.message || 'Check connection.'}</p>
+        </div>`;
+    }
+  } finally {
+    isAPODLoading = false;
+  }
 }
-const searchBtn = document.getElementById("search-btn");
-const dateInput = document.getElementById("date-input");
-const prevBtn = document.getElementById("prev-btn");
-const nextBtn = document.getElementById("next-btn");
-const randomBtn = document.getElementById("random-btn");
 
-searchBtn?.addEventListener("click", () => {
-  if (dateInput.value) loadAPOD(dateInput.value);
+function renderAPODData(data, container) {
+  currentAPODDate = data.date;
+  currentAPODData = data;
+
+  const dateInput = document.getElementById("date-input");
+  if (dateInput) dateInput.value = data.date;
+
+  let mediaHtml = "";
+  const sourceUrl = isHD && data.hdurl ? data.hdurl : data.url;
+
+  if (data.media_type === "video") {
+    let videoUrl = data.url;
+    let isEmbeddable = false;
+    let isDirectVideo = false;
+
+    if (videoUrl.toLowerCase().endsWith(".mp4")) {
+      isDirectVideo = true;
+    } else {
+      const ytRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i;
+      const ytMatch = videoUrl.match(ytRegex);
+
+      const vimeoRegex = /vimeo\.com\/(?:video\/)?([0-9]+)/i;
+      const vimeoMatch = videoUrl.match(vimeoRegex);
+
+      if (ytMatch && ytMatch[1]) {
+        videoUrl = `https://www.youtube.com/embed/${ytMatch[1]}?rel=0`;
+        isEmbeddable = true;
+      } else if (vimeoMatch && vimeoMatch[1]) {
+        videoUrl = `https://player.vimeo.com/video/${vimeoMatch[1]}`;
+        isEmbeddable = true;
+      }
+    }
+
+    if (isDirectVideo) {
+      mediaHtml = `
+        <video autoplay muted loop controls>
+          <source src="${videoUrl}" type="video/mp4">
+        </video>`;
+    } else if (isEmbeddable) {
+      mediaHtml = `
+        <iframe src="${videoUrl}" allowfullscreen></iframe>`;
+    } else if (data.thumbnail_url) {
+      mediaHtml = `
+        <div style="position:relative;">
+          <img src="${data.thumbnail_url}" onclick="window.open('${data.url}', '_blank')">
+          <div style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%);">
+            ▶
+          </div>
+        </div>`;
+    }
+  } else {
+    mediaHtml = `
+      <img src="${sourceUrl}" alt="${data.title}"
+           onclick="window.open('${data.hdurl || data.url}', '_blank')">`;
+  }
+
+  const copyright = data.copyright
+    ? `© ${data.copyright}`
+    : "Public Domain";
+
+  container.innerHTML = `
+    <div class="apod-media-container">
+      ${mediaHtml}
+    </div>
+
+    <div class="apod-details">
+      <h3>${data.title}</h3>
+
+      <div class="apod-meta">
+        <span>📅 ${data.date}</span>
+        <span>📸 ${copyright}</span>
+      </div>
+
+      <p>${data.explanation}</p>
+
+      <div class="apod-actions">
+        <button class="apod-action-btn" onclick="saveFavorite('${data.url}')">
+          <i class="fa-solid fa-heart" style="color: #f43f5e;"></i> Save
+        </button>
+
+        <button class="apod-action-btn hd-toggle-btn ${isHD ? "hd-on" : ""}" onclick="toggleHD()">
+          <span class="hd-icon">HD</span>
+          <span class="hd-status">${isHD ? "ON" : "OFF"}</span>
+        </button>
+
+        ${
+          data.media_type === "image"
+            ? `<button class="apod-action-btn download-btn" onclick="downloadImage('${data.hdurl || data.url}', '${data.title}')"><i class="fa-solid fa-download"></i> Download</button>`
+            : ""
+        }
+      </div>
+    </div>
+  `;
+}
+
+// 🔍 BUTTONS
+document.getElementById("search-btn")?.addEventListener("click", () => {
+  const date = document.getElementById("date-input").value;
+  if (date) loadAPOD(date);
 });
 
-prevBtn?.addEventListener("click", () => shiftDate(-1));
-nextBtn?.addEventListener("click", () => shiftDate(1));
-randomBtn?.addEventListener("click", () => loadRandomAPOD());
+document.getElementById("prev-btn")?.addEventListener("click", () => shiftDate(-1));
+document.getElementById("next-btn")?.addEventListener("click", () => shiftDate(1));
+document.getElementById("random-btn")?.addEventListener("click", loadRandomAPOD);
 
+// 📅 DATE SHIFT
 function shiftDate(offset) {
   if (!currentAPODDate) return;
+
   const d = new Date(currentAPODDate);
   d.setDate(d.getDate() + offset);
-  
-  if (d > new Date()) return alert("Can't look into the future!");
-  
-  const formatted = d.toISOString().split("T")[0];
-  loadAPOD(formatted);
+
+  if (d > new Date()) {
+    alert("Can't go into the future!");
+    return;
+  }
+
+  loadAPOD(d.toISOString().split("T")[0]);
 }
 
+// 🎲 RANDOM
 function loadRandomAPOD() {
-  const start = new Date(1995, 5, 16); // APOD start date
+  const start = new Date(1995, 5, 16);
   const end = new Date();
-  const randomDate = new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+
+  const randomDate = new Date(
+    start.getTime() + Math.random() * (end.getTime() - start.getTime())
+  );
+
   loadAPOD(randomDate.toISOString().split("T")[0]);
 }
 
-window.toggleHD = function() {
+// 🔄 HD TOGGLE
+window.toggleHD = function () {
   isHD = !isHD;
-  if(currentAPODDate) {
-    loadAPOD(currentAPODDate); 
-  }
-}
-window.downloadImage = function(url, filename) {
+  if (currentAPODDate) loadAPOD(currentAPODDate);
+};
+
+// ⬇ DOWNLOAD
+window.downloadImage = function (url, filename) {
   fetch(url)
-    .then(response => response.blob())
+    .then(res => res.blob())
     .then(blob => {
-      const blobUrl = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = blobUrl;
-      a.download = filename + '.jpg';
-      document.body.appendChild(a);
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = filename + ".jpg";
       a.click();
-      a.remove();
-      window.URL.revokeObjectURL(blobUrl);
-    })
-    .catch(() => alert("Could not fetch the image for download. It may be blocked by CORS."));
-}
+    });
+};
+
+// 🚀 DEFAULT LOAD → TODAY’S APOD
+window.addEventListener("DOMContentLoaded", () => {
+  loadAPOD(); // ✅ THIS is the key fix
+});

@@ -120,20 +120,82 @@ body.light .top-navbar {
 }
 
 .navbar-brand {
+  cursor: pointer;
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.navbar-brand:hover {
+  transform: scale(1.03);
+}
+
+.navbar-brand:hover .logo-wrapper {
+  filter: drop-shadow(0 0 15px #00d4ff) drop-shadow(0 0 30px rgba(0, 212, 255, 0.6));
+}
+
+.logo-wrapper {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 15px;
+  filter: drop-shadow(0 0 10px #00d4ff) drop-shadow(0 0 20px rgba(0, 212, 255, 0.4));
+  transition: filter 0.3s ease;
+  padding-bottom: 5px; /* Room for underline */
 }
 
 .navbar-logo-icon {
-  font-size: 1.8rem;
-  color: var(--primary-accent);
+  font-size: 2.2rem;
+  background: linear-gradient(135deg, #00d4ff 0%, #3a8fff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-.navbar-brand h2 {
-  font-size: 1.4rem;
+.navbar-logo-text {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 2px;
   margin: 0;
-  letter-spacing: -0.5px;
+  background: linear-gradient(90deg, #00d4ff 0%, #3a8fff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: #00d4ff;
+  position: relative;
+}
+
+/* Animated futuristic trace line under the logo */
+.navbar-logo-text::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #00d4ff, transparent);
+  opacity: 0.8;
+  transform: scaleX(0.8);
+  transition: transform 0.4s ease;
+}
+
+.navbar-brand:hover .navbar-logo-text::after {
+  transform: scaleX(1.1);
+}
+
+body.light .logo-wrapper {
+  filter: drop-shadow(0 0 10px rgba(11, 61, 145, 0.2));
+}
+
+body.light .navbar-logo-icon,
+body.light .navbar-logo-text {
+  background: linear-gradient(90deg, #0b3d91 0%, #1e3a8a 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+body.light .navbar-logo-text::after {
+  background: linear-gradient(90deg, transparent, #0b3d91, transparent);
 }
 
 .nav-links {
@@ -312,7 +374,7 @@ body.light .section-header h2 {
 }
 
 /* ===================== COMPONENTS ===================== */
-.glass-card {
+.glass-card, .nasa-card {
   background: linear-gradient(135deg, rgba(5, 12, 26, 0.8) 0%, rgba(0, 212, 255, 0.05) 100%);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
@@ -322,9 +384,11 @@ body.light .section-header h2 {
   padding: 1.8rem;
   box-shadow: inset 0 0 20px rgba(0, 212, 255, 0.05), 0 12px 40px rgba(0, 0, 0, 0.5);
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease, border-color 0.4s ease;
+  overflow: hidden;
+  position: relative;
 }
 
-.glass-card:hover {
+.glass-card:hover, .nasa-card:hover {
   border-color: #00d4ff;
   box-shadow: 0 15px 45px rgba(0, 0, 0, 0.6), 0 0 30px rgba(0, 212, 255, 0.25), inset 0 0 20px rgba(0, 212, 255, 0.15);
   transform: translateY(-6px);
@@ -880,4 +944,191 @@ body:not(.dashboard-active) .overlay {
 
 body.light .overlay {
   background: rgba(255, 255, 255, 0.5);
+}
+
+/* ===================== GAMIFIED DASHBOARD LAYOUT ===================== */
+.dashboard-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+@media (min-width: 1024px) {
+  .dashboard-layout {
+    grid-template-columns: 350px 1fr;
+  }
+}
+
+.dashboard-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.dashboard-main {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Status Panel */
+.status-panel ul {
+  list-style: none;
+  padding: 0;
+  margin-top: 1rem;
+}
+.status-panel li {
+  font-family: 'Orbitron', var(--font-heading);
+  font-size: 0.95rem;
+  color: #a5f3fc;
+  transition: opacity 0.5s ease;
+}
+
+body.light .status-panel li {
+  color: #0b3d91;
+}
+
+/* Progress & Gamification */
+.gamification-panel {
+  text-align: left;
+}
+.progress-bar-container {
+  width: 100%;
+  height: 12px;
+  background: var(--surface-2);
+  border-radius: 10px;
+  margin: 1rem 0 0.5rem 0;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+}
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #0284c7, #0ea5e9);
+  border-radius: 10px;
+  transition: width 1s ease-in-out, background-color 0.5s, box-shadow 0.5s;
+}
+.score-text {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  font-family: 'Orbitron', var(--font-heading);
+}
+
+.badges-panel {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.no-badges {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+.mission-badge {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(0, 212, 255, 0.4);
+  font-size: 1.2rem;
+  box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);
+  transition: transform 0.3s, box-shadow 0.3s;
+  cursor: pointer;
+  position: relative;
+}
+.mission-badge:hover {
+  transform: translateY(-3px) scale(1.1);
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.6);
+}
+
+/* Tooltip standard utility */
+.tooltip-trigger .tooltip-text {
+  visibility: hidden;
+  width: max-content;
+  max-width: 200px;
+  background-color: #030712;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 10px;
+  position: absolute;
+  z-index: 10;
+  bottom: 125%;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 0.3s;
+  font-size: 0.8rem;
+  font-family: var(--font-body);
+  border: 1px solid var(--primary-accent);
+}
+body.light .tooltip-trigger .tooltip-text {
+  background-color: #f8fafc;
+  color: #0f172a;
+}
+.tooltip-trigger:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* Today in Space Panel */
+.today-preview-content {
+  margin-top: 1rem;
+}
+.today-preview-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+@media (min-width: 768px) {
+  .today-preview-layout {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+.preview-media {
+  flex: 1;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+  max-height: 250px;
+}
+.preview-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.preview-text {
+  flex: 1;
+}
+.preview-text h4 {
+  font-size: 1.3rem;
+  margin-bottom: 0.5rem;
+}
+.preview-text p {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  margin-bottom: 1rem;
+  line-height: 1.5;
+}
+.explore-apod-btn {
+  width: 100%;
+  justify-content: center;
+}
+
+/* ===================== PAGE TRANSITIONS ===================== */
+.view-section {
+  opacity: 0.5;
+  transform: scale(0.97) translateY(20px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.view-section.section-focussed {
+  opacity: 1;
+  transform: scale(1) translateY(0);
 }
