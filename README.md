@@ -1,94 +1,254 @@
-# Space-Explorer-NASA-Mission-Control-Dashboard
+# Space Explorer — NASA Mission Control Dashboard
 
-PROJECT DESCRIPTION
-Space Explorer — NASA Mission Control is a web application that allows users to explore real-time space data provided by NASA’s public APIs. The application displays the Astronomy Picture of the Day, Mars rover photographs, and information about near-Earth asteroids. Users can search, filter, and sort the data, as well as save their favorite items. The interface will be designed with a space-themed dashboard to simulate a mission control experience.
+A futuristic, space-themed web application that allows users to explore real-time space data using NASA APIs and live satellite tracking. The interface simulates a **Mission Control Dashboard**, providing an immersive and interactive experience.
 
-PURPOSE
-The purpose of this project is to demonstrate API integration, dynamic data handling, and interactive UI development using JavaScript. It provides users with educational and engaging space-related information while showcasing modern web development concepts such as asynchronous programming, array higher-order functions, and responsive design.
+---
 
-PUBLIC API SELECTED
-Links:
+## Project Description
 
-https://api.nasa.gov/planetary/apod
-https://api.nasa.gov/mars-photos/api/v1/rovers
-https://api.nasa.gov/neo/rest/v1/feed
+**Space Explorer — NASA Mission Control** is a dynamic web application that integrates multiple space APIs to display real-time data.
 
-FEATURES
-The application will include the following features:
+Users can:
 
-Display Astronomy Picture of the Day with description
-Mars Rover Photo Explorer with rover selection
-Near-Earth Asteroid Tracker
-Search by date or keywords
-Filtering options (e.g., rover type, camera, hazardous asteroids)
-Sorting options (e.g., date, size, distance)
-Favorite/Bookmark functionality
-Responsive design for mobile, tablet, and desktop
-Loading indicators during API calls
-Dark space-themed user interface
+* View NASA’s **Astronomy Picture of the Day (APOD)**
+* Explore **Near-Earth Asteroids**
+* Track the **International Space Station (ISS)** in real-time
+* Search, filter, and sort space data
+* Save favorites using local storage
 
-TECHNOLOGIES
+The application features a **modern, cinematic UI** with smooth animations and a space-inspired design.
 
-HTML for structure
-CSS for styling
-JavaScript (ES6+) for functionality
-Fetch API for data retrieval
-NASA Public APIs for real-time space data
-Local Storage for saving user preferences
+---
 
-HOW TO SET UP AND RUN THE PROJECT
+## Purpose
 
-Prerequisites:
+This project demonstrates:
 
-A modern web browser (Chrome, Edge, Firefox, etc.)
-Internet connection (required for API requests)
-Code editor such as Visual Studio Code (optional)
+* API integration using JavaScript (Fetch API)
+* Asynchronous programming (`async/await`)
+* Use of array higher-order functions:
 
-Setup Instructions:
+  * `map()`
+  * `filter()`
+  * `sort()`
+  * `find()`
+* Dynamic UI rendering
+* Modular and scalable code architecture
+* Responsive web design
 
-Clone or download the project repository:
+---
+
+## Features
+
+### Astronomy Picture of the Day (APOD)
+
+* Displays NASA’s daily image/video
+* Includes title, date, and description
+
+---
+
+### Asteroid Explorer
+
+* Displays near-Earth asteroid data
+* Features:
+
+  * Search functionality
+  * Filtering (hazardous / non-hazardous)
+  * Sorting (distance, size, speed)
+* Built using array higher-order functions
+
+---
+
+### ISS Live Command Center (Main Feature)
+
+* Real-time ISS tracking:
+
+  * Latitude & Longitude
+  * Velocity
+  * Altitude
+* Crew onboard display
+* Auto-refresh every few seconds
+* Sound toggle system
+* Animated space UI (orbit scan + glow effects)
+
+---
+
+### Favorites System
+
+* Save APOD and asteroid items
+* Stored using **localStorage**
+
+---
+
+### UI/UX
+
+* Dark space-themed design
+* Neon glow + glassmorphism effects
+* Smooth animations and transitions
+* Fully responsive layout
+
+---
+
+## Bonus Features Implemented
+
+* Loading indicators during API calls
+* Local Storage (favorites & preferences)
+* Debouncing (optimized search)
+* Modular architecture (clean code structure)
+* Smooth animations and transitions
+
+---
+
+## Technologies Used
+
+* **HTML** — Structure
+* **CSS** — Styling & animations
+* **JavaScript (ES6+)** — Functionality
+* **Fetch API** — API requests
+* **NASA APIs** — Space data
+* **Local Storage** — Data persistence
+
+---
+
+## APIs Used
+
+* https://api.nasa.gov/planetary/apod
+* https://api.nasa.gov/neo/rest/v1/feed
+* https://api.wheretheiss.at/v1/satellites/25544
+* https://api.open-notify.org/astros.json
+
+---
+
+##  Project Structure
+
+```bash
+space-explorer/
+│
+├── index.html
+|--iss.html
+│
+├── assets/
+│   └── videos/
+│       ├── earthvideo.mp4
+│       └── spacevideo.mp4
+│
+├── style_files/
+│   ├── main.css
+│   ├── apod.css
+│   ├── asteroid.css
+│   ├── iss.css
+│
+├── script_files/
+│   ├── main.js
+│   ├── api.js
+│   ├── ui.js
+│   ├── utils.js
+│   │
+│   ├── scripts/
+│   │   ├── apod.js
+│   │   ├── asteroid.js
+│   │   ├── iss.js
+│   │   └── favorites.js
+│
+└── README.md
+```
+
+---
+
+## Setup & Installation
+
+### Prerequisites
+
+* Modern browser (Chrome, Edge, Firefox)
+* Internet connection
+* Optional: VS Code
+
+---
+
+### Installation
+
+```bash
 git clone https://github.com/your-username/space-explorer.git
-
-OR download the ZIP file and extract it.
-
-Navigate to the project folder:
 cd space-explorer
-Open the project in a code editor (optional):
-code .
+```
 
-Running the Application:
+---
 
-Method 1 — Open Directly (Simplest)
+### Running the App
 
-Open the index.html file in any web browser.
-Double-click the file
-OR right-click → Open With → Browser
+#### Method 1 — Open Directly
 
-Method 2 — Using Live Server (Recommended)
+* Open `index.html` in your browser
 
-If using Visual Studio Code:
-Install the Live Server extension
-Right-click on index.html
-Click "Open with Live Server"
+#### Method 2 — Live Server (Recommended)
 
-This will start a local development server and automatically refresh changes.
+* Install Live Server in VS Code
+* Right-click `index.html`
+* Click **Open with Live Server**
 
-NASA API Key Setup:
-Obtain a free API key from:
+---
 
-https://api.nasa.gov/
+## NASA API Key Setup
 
-Replace the placeholder in the JavaScript file:
-const API_KEY = "YOUR_API_KEY";
+1. Get your API key:
+    https://api.nasa.gov/
 
-Internet Requirement:
-The application requires an active internet connection to fetch real-time data from NASA’s public APIs.
+2. Add in your code:
 
+```js
+const API_KEY = "Cj3K2i5DrgI4SPecivHDskyVd8PdXHzAZu5yPyN3";
+```
 
-The project supports search, filtering, and sorting functionalities using JavaScript array higher-order functions such as map, filter, find, and sort. Interactive buttons will allow users to mark items as favorites. The application will be responsive and dynamically update content based on user input.
+---
 
+##  Deployment
 
+The project is deployed using **Netlify / GitHub Pages**
 
+ Live Demo: **(https://nasaspaceexplorer.netlify.app/)**
+
+---
+
+## Responsiveness
+
+* Mobile 
+* Tablet 
+* Desktop 
+
+---
+
+## Key Learnings
+
+* Handling real-time API data
+* Modular JavaScript architecture
+* Debugging API and deployment issues
+* Performance optimization techniques
+* UI/UX design for dashboards
+
+---
+
+## Author
+
+**Shreya Das**
+
+---
+
+## Submission
+
+Final Submission Date: **12th April**
+
+---
+
+##  Future Improvements
+
+* 3D Earth Globe visualization
+* ISS orbit prediction path
+* Advanced sound system
+* AI-based space insights
+
+---
+
+ This project combines real-time data, modern UI, and interactive features to simulate a futuristic space mission control dashboard.
 
 
 
